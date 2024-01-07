@@ -1,0 +1,22 @@
+Metadata-Version: 2.0
+Name: py3compat
+Version: 0.4
+Summary: Small Python2/3 helpers to avoid depending on six.
+Home-page: http://github.com/yeleman/py3compat
+Author: yeleman
+Author-email: rgaudin@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+
+Based on Jinja2._compat module.
+Some py2/py3 compatibility support based on a stripped down version of six so we don't have to depend on a specific version of it.
+
