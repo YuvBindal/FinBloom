@@ -13,6 +13,15 @@ class TransactionRequest(BaseModel):
     repayment_schedule: str
     chain: str = "mock-xrp-testnet"  # Default to mock XRP testnet
 
+# one function/route to send crypto with a deadline
+# transaction_id, amount, currency, deadline
+
+# one function/route to recieve by that date with expected amount
+# expected amount is calculated by LLM
+# transaction_id, amount, currency, deadline
+
+# Write everything to JSON file
+
 
 @router.post("/transactions")
 # Endpoint for initiating transactions

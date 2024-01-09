@@ -8,41 +8,45 @@ from xrpl.models.transactions import Payment, Memo
 import json  # To convert the repayment schedule dictionary to a string
 import requests
 
-#JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
-#client = JsonRpcClient(JSON_RPC_URL)
-#wallet1 =  generate_faucet_wallet(client, debug =True)
-#wallet2 =  generate_faucet_wallet(client, debug=True)
-  # Define your repayment schedule dictionary
-#sample_repayment_schedule = {
- #       "Effective_Interest_Rate": 0.1,
-  #      "Principal_Amount_SGD": 10000,
-   #     "Loan_Maturity_Years": 5,
-    #    "Total_Loan_Amount_SGD": 16105.1,
-     #   "Installments_Per_Year": 12,
-      #  "Installment_Amount": 268.42
-#}
+print("running")
 
-#on the testnet client
+JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
+client = JsonRpcClient(JSON_RPC_URL)
+wallet1 = generate_faucet_wallet(client, debug=True)
+wallet2 = generate_faucet_wallet(client, debug=True)
+# Define your repayment schedule dictionary
+sample_repayment_schedule = {
+    "Effective_Interest_Rate": 0.1,
+    "Principal_Amount_SGD": 10000,
+    "Loan_Maturity_Years": 5,
+    "Total_Loan_Amount_SGD": 16105.1,
+    "Installments_Per_Year": 12,
+    "Installment_Amount": 268.42
+}
+
+print("running")
+
+# on the testnet client
+
+
 def generate_loan_transaction(client, wallet1, wallet2, repayment_schedule, loan_amount, currency):
 
     transaction_amt_in_xrp = convert_to_xrp(loan_amount, currency)
     transaction_amount_in_drops = int(transaction_amt_in_xrp*1000000)
 
-
-    regular_key_wallet =  generate_faucet_wallet(client, debug=True)
+    regular_key_wallet = generate_faucet_wallet(client, debug=True)
 
     print("Balances before payment:")
-    print( get_balance(wallet1.classic_address, client))
-    print( get_balance(wallet2.classic_address, client))
+    print(get_balance(wallet1.classic_address, client))
+    print(get_balance(wallet2.classic_address, client))
 
-    tx = SetRegularKey(account=wallet1.address, regular_key=regular_key_wallet.address)
+    tx = SetRegularKey(account=wallet1.address,
+                       regular_key=regular_key_wallet.address)
 
     set_regular_key_response = submit_and_wait(tx, client, wallet1)
 
     print("Response for successful SetRegularKey tx:")
     print(set_regular_key_response)
-
-
 
     # Convert the repayment schedule dictionary to a string
     repayment_schedule_str = json.dumps(repayment_schedule)
@@ -61,7 +65,7 @@ def generate_loan_transaction(client, wallet1, wallet2, repayment_schedule, loan
     )
 
     # Now, submit the transaction as you were doing previously
-    payment_response =  submit_and_wait(payment, client, regular_key_wallet)
+    payment_response = submit_and_wait(payment, client, regular_key_wallet)
 
     print("Response for tx signed using Regular Key:")
     pprint(payment_response)
@@ -69,8 +73,8 @@ def generate_loan_transaction(client, wallet1, wallet2, repayment_schedule, loan
 
     # Balance after sending 1000 from wallet1 to wallet2
     print("Balances after payment:")
-    print( get_balance(wallet1.address, client))
-    print( get_balance(wallet2.address, client))
+    print(get_balance(wallet1.address, client))
+    print(get_balance(wallet2.address, client))
 
     hex_data = payment_response.result['Memos'][0]['Memo']['MemoData']
 
@@ -81,13 +85,14 @@ def generate_loan_transaction(client, wallet1, wallet2, repayment_schedule, loan
     decoded_string = data_bytes.decode("utf-8")
 
     print(decoded_string)  # Decoded repayment_schemes
+    # Transaction ID
 
 
 def convert_to_xrp(amount, currency):
     # Fetching data from CoinGecko API
     url = f'https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies={currency.lower()}'
     response = requests.get(url)
-    
+
     if response.status_code == 200:
         data = response.json()
         if 'ripple' in data and currency.lower() in data['ripple']:
@@ -99,8 +104,9 @@ def convert_to_xrp(amount, currency):
     else:
         return "Failed to fetch data from CoinGecko API."
 
+
 loan_amount = 1000  # Replace with your amount
 currency = 'SGD'  # Replace with your currency code
 
-
-#generate_loan_transaction(client, wallet1, wallet2, sample_repayment_schedule, loan_amount, currency)
+generate_loan_transaction(client, wallet1, wallet2,
+                          sample_repayment_schedule, loan_amount, currency)
