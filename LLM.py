@@ -37,3 +37,4 @@ def loan_prediction_and_repayment_generation(loan_data):
     response = model.generate_content(prompt)
     return response.text
 
+
