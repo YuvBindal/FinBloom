@@ -1,3 +1,6 @@
+# Dummy FILE DONT CHANGE ANYTHING HERE
+# CAN DELETE THIS FILE AFTER TESTING
+
 from xrpl.account import get_balance
 from xrpl.clients import JsonRpcClient
 from xrpl.models import Payment, SetRegularKey
