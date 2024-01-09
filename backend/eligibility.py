@@ -1,8 +1,12 @@
 from pydantic import BaseModel
+from fastapi import APIRouter, Body
 
 
-async def check_eligibility(request: BaseModel) -> bool:
-    # Implement your eligibility logic here, accessing necessary data from the request object
-    # ...
+router = APIRouter()
+
+
+@router.post("/eligible")
+async def eligible() -> bool:
+    # TODO: Implement eligibility check
     is_eligible = True
     return is_eligible
