@@ -1,8 +1,14 @@
 from fastapi import APIRouter
 # import the modules containing the functions you need
-from . import loans, eligibility
+from loans import sendPayment, repayLoan
+from eligibility import eligible
 
 router = APIRouter()
+
+
+@router.get("/hello")
+async def hello():
+    return {"message": "yep, it's working"}
 
 
 @router.post("/send-payment")

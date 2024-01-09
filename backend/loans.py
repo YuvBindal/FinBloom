@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Body, Depends
 from pydantic import BaseModel
 from datetime import datetime
-import xrp_library
+import xrpl
 # llm file
 import llm_functions
-from .eligibility import eligible  # Import the function
+from eligibility import eligible
 
 router = APIRouter()
 
@@ -31,7 +31,7 @@ async def sendPayment(request: SendCryptoRequest = Body(...), is_eligible: bool 
     if is_eligible:
         try:
             # Interaction with the XRPL to send the money
-            await xrp_library.send_crypto_with_deadline(
+            await xrpl.send_crypto_with_deadline(
                 request.transaction_id,
                 request.amount,
                 request.currency,
