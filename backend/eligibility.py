@@ -2,8 +2,7 @@ import pickle
 import pandas as pd
 
 # Load the model
-with open("eligibility.pkl", "rb") as f:
-    model = pickle.load(f)
+model = pickle.load(open("eligibility_check_model", "rb"))
 
 
 async def eligible(data: dict) -> bool:
