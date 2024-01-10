@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from requests import request
 
 # import the modules containing the functions you need
 from loans import sendPayment, repayLoan
@@ -26,6 +27,8 @@ async def repay_loan():
 
 @router.post("/eligible")
 async def process_model_output(data):
+    # jsonify the data
+    data = request.get_json()
     # Route checks if the user is eligible for a loan,
     # return the result of the function from the eligibility module
     # also add update the eligibility on server
