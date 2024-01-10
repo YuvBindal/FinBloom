@@ -117,6 +117,7 @@ export default function LoanRequestPage() {
   const handleEligibleSubmission = async (e) => {
     e.preventDefault();
     try {
+      
 
     } catch (error) {
       console.error("Error submitting eligiblity request: ", error)

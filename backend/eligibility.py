@@ -9,7 +9,7 @@ async def eligible(data: dict) -> bool:
     cleaned = {key: int(value) for key, value in data.items()}
 
     # Convert the data to a format that the model can understand
-    data_for_prediction = pd.DataFrame([data])
+    data_for_prediction = pd.DataFrame([cleaned])
 
     # Use the model to make a prediction
     prediction = model.predict(data_for_prediction)
