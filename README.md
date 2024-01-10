@@ -15,11 +15,28 @@ Server should give back this response:
 {"message":"yep, it's working"}
 ```
 
-## Directory:
+## Snapshots from the project
 
-#### In /backend:
+#### Home page
 
-- Server code is in `server.py`. No need to change anything there.
-- All routes go into `routes.py`. Make sure to import
-- All models go into `/aiModels`. and should be called from there.
-- For now all logic stuff is in relevant file in the `/backend` folder. Can change later
+![home](/images/homePage.png)
+
+#### Loans Request
+
+![home](/images/loanRequest.png)
+
+#### Eligibilty Check
+
+![home](/images/loanRequest.png)
+
+#### Details of the loan
+
+![home](/images/loanDeets.png)
+
+#### Loan Repayment
+
+![home](/images/repayment.png)
+
+#### Credit Score
+
+![home](/images/creditScorePage.png)
