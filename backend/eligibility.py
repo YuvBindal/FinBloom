@@ -8,8 +8,8 @@ with open("loan_approval_rf_model.pkl", "rb") as f:
 
 async def eligible(data: dict) -> bool:
     # Convert the data to a format that the model can understand
-    data_for_prediction = pd.DataFrame().from_dict(data)
-
+    mapped = {key: [val] for key, val in data.items()}
+    data_for_prediction = pd.DataFrame().from_dict(mapped)
     # Use the model to make a prediction
     prediction = model.predict(data_for_prediction)
 
