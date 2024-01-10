@@ -35,6 +35,7 @@ async def send_payment():
 @router.post("/repayment")
 async def repay_loan():
     # Call the function from the loans module
+    print('a')
     return await repayLoan()
 
 
