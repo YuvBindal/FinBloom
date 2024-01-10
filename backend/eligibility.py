@@ -16,4 +16,4 @@ async def eligible(data: dict) -> bool:
     # Assuming that the model returns 1 for eligible and 0 for not eligible
     is_eligible = prediction[0] == 1
 
-    return is_eligible
+    return { "isEligible": is_eligible }
