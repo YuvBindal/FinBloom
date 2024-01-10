@@ -1,6 +1,6 @@
 # BloomFin
 
-A DeFi web application for microloans built using XPRL
+A DeFi Prototype for P2P microloans built using XPRL
 
 ## Run server
 
