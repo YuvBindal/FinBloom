@@ -5,6 +5,8 @@ from pydantic import BaseModel
 # import the modules containing the functions you need
 from loans import sendPayment, repayLoan
 from eligibility import eligible
+from llm_functions import loan_prediction_and_repayment_generation
+from loan_issuance import convert_to_xrp, generate_loan_transaction, generate_transaction_wallets
 
 
 class LoanData(BaseModel):
@@ -16,6 +18,20 @@ class LoanData(BaseModel):
     self_employed: str
     income_annum: str
     loan_amount: str
+    loan_term: str
+    cibil_score: str
+    residential_assets_value: str
+    commercial_assets_value: str
+    luxury_assets_value: str
+    bank_asset_value: str
+
+class UserProfile(BaseModel):
+    # Define the structure of your data here
+    # For example:
+    no_of_dependents: str
+    education: str
+    self_employed: str
+    income_annum: str
     loan_term: str
     cibil_score: str
     residential_assets_value: str
@@ -43,6 +59,29 @@ async def repay_loan():
     # Call the function from the loans module
     return await repayLoan()
 
+@router.post("/llm_prediction")
+async def repay_loan(data: UserProfile):
+    # LLM model prediciting user loan amount and repayment schedule based on their profile
+    print("reached here !!!!!!!!!!!!!!!!!!!!!")
+    data_dict = data.dict()
+    llm_response = loan_prediction_and_repayment_generation(data_dict)
+
+    return llm_response
+
+@router.post("/xrp_rate")
+async def xrp_rate():
+    # LLM model prediciting user loan amount and repayment schedule based on their profile
+    print("reached here !!!!!!!!!!!!!!!!!!!!!")
+    exchange_rate = convert_to_xrp(1, "SGD")
+
+    return exchange_rate
+
+@router.post("/wallets")
+async def wallets():
+    print("reached here !!!!!!!!!!!!!!!!!!!!!")
+    wallets =  await generate_transaction_wallets()
+
+    return wallets
 
 @router.post("/eligible")
 async def process_model_output(data: LoanData):

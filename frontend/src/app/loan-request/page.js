@@ -26,13 +26,21 @@ export default function LoanRequestPage() {
   const [rAssetValues, setRAssetValues] = useState("");
   const [lAssetValues, setLAssetValues] = useState("");
   const [bAssetValues, setBAssetValuess] = useState("");
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
   const [loanRequest, setLoanRequest] = useState({});
-  const [userEligibility, setUserEligiblity] = useState(false);
-
+  const [userEligibility, setUserEligiblity] = useState(true);
+  const [llmResponse, setLLMResponse] = useState(
+    "Loading the calculated financing amount and repayment schedule based on your details!"
+  );
+  const [llmResponseSuccess, setLLMResponseSuccess] = useState(true);
+  const [walletID, setWalletID] = useState("r39DsJ1ZmuwgfbVvJTFBgVRdDC5wWufBsC");
+  const [destinationWalletID, setDestinationWalletID] = useState("rDGCeV8MbdhVNgHUErRQUKruYDxw5wmH1t");
+  const [showFundsConfirmation, setFundsConfirmation] = useState(false);
+  const [xrpRate, setXrpRate] = useState(0);
   const [loanDate, setLoanDate] = useState("");
   const [repaymentDate, setRepaymentDate] = useState("");
   const [previousLoans, setPreviousLoans] = useState([]);
+  const [walletBalance, setWalletBalance] = useState(6616860000);
 
   const router = useRouter();
 
@@ -134,6 +142,8 @@ export default function LoanRequestPage() {
       if (response.ok) {
         const result = await response.json();
         console.log("Eligibility result:", result);
+        console.log(result.is_eligible);
+        setUserEligiblity(result.is_eligible);
         // Handle the result as needed
       } else {
         console.error("Error:", response.statusText);
@@ -142,7 +152,109 @@ export default function LoanRequestPage() {
     } catch (error) {
       console.error("Error submitting eligiblity request: ", error);
     }
+
   };
+
+
+  const handleWallets = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://127.0.0.1:8000/wallets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        setWalletID(result[0]);
+        setDestinationWalletID(result[1]);
+        // Handle the result as needed
+      } else {
+        console.error("Error:", response.statusText);
+        // Handle error response
+      }
+    } catch (error) {
+      console.error("Error submitting wallets request: ", error);
+    }
+
+  };
+
+  const handleLLMResponse = async (e) => {
+    e.preventDefault();
+    try {
+      //1. run the ml model for eligib
+      // Make a POST request to the /eligible endpoint
+      
+      const userProfile = {
+        no_of_dependents: loanDependents,
+        education: loanEducation,
+        self_employed: loanEmployment,
+        income_annum: loanAnnualIncome,
+        loan_term: loanYears,
+        cibil_score: cibilScore,
+        residential_assets_value: rAssetValues,
+        commercial_assets_value: cAssetValues,
+        luxury_assets_value: lAssetValues,
+        bank_asset_value: bAssetValues,
+      }
+
+
+      const response = await fetch("http://127.0.0.1:8000/llm_prediction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userProfile),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        setLLMResponse(result);
+        setLLMResponseSuccess(true);
+        // Handle the result as needed
+      } else {
+        console.error("Error:", response.statusText);
+        // Handle error response
+      }
+    } catch (error) {
+      console.error("Error submitting llm request: ", error);
+    }
+  
+
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/xrp_rate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        setXrpRate(result);
+        // Handle the result as needed
+      } else {
+        console.error("Error:", response.statusText);
+        // Handle error response
+      }
+
+
+    } catch (error) {
+      console.error("Error submitting xrp rate request:",)
+    }
+
+
+  };  
+
+  const handleConfirmationMessage = async (e) => {
+    setFundsConfirmation(true);
+  }
 
   return (
     <div className="container flex">
@@ -384,19 +496,59 @@ export default function LoanRequestPage() {
         </h1>
         <div>
           {showForm && (
-            <form onSubmit={handleEligibleSubmission}>
-              <p>Current Loan Request</p>
-              <pre>{JSON.stringify(loanRequest, null, 2)}</pre>
-              <p>
-                Eligibility Status:{" "}
-                {userEligibility
-                  ? "You are eligible, now please check your eligibility details"
-                  : "You are not eligible/or have not submitted an evaluation request"}
-              </p>
-              <button type="submit" className="p-2 bg-blue-500 text-white">
-                Submit Evaluation
-              </button>
-            </form>
+            <div>
+              <form onSubmit={handleEligibleSubmission}>
+                <p>Current Loan Request</p>
+                <pre>{JSON.stringify(loanRequest, null, 2)}</pre>
+                <p>
+                  Eligibility Status:{" "}
+                  {userEligibility
+                    ? "You are eligible, now please check your eligibility details"
+                    : "You are not eligible/or have not submitted an evaluation request"}
+                </p>
+                <button type="submit" className="p-2 bg-blue-500 text-white">
+                  Submit Evaluation
+                </button>
+                {userEligibility && (
+                  <div>
+                    <button
+                      type="submit"
+                      className="p-2 bg-green-600 text-white"
+                      onClick={handleLLMResponse}
+                    >
+                      Check microloan details!
+                    </button>
+                    <pre>{JSON.stringify(llmResponse, null, 2)}</pre>
+                    <p>If you agree with these terms, please generate a walletID to transfer your funds on the XRPL Chain</p>
+                    {llmResponseSuccess && (
+                      <p>The current exchange rate for 1 SGD = {JSON.stringify(xrpRate, null , 2)} XRP</p>
+                    )}
+  
+                    
+                    <p>Your Wallet ID: {JSON.stringify(walletID, null, 2)}</p>
+                    <p>Lender Wallet ID: {JSON.stringify(destinationWalletID, null , 2)}</p>
+                    
+                    <button
+                      type="submit"
+                      className="p-2 bg-green-600 text-white"
+                      onClick = {handleConfirmationMessage}
+                    >
+                      Confirm Loan and Transfer funds!
+                    </button>
+                    {showFundsConfirmation && (
+                      <div>
+                        <p>Congratulations on the loan! Your funds have been successfully transferred.</p>
+                        <p>Your wallet balance is XRP: {JSON.stringify(walletBalance/1_000_000, null, 2)}</p>
+                      </div>
+                    
+                    )}
+
+
+
+                  </div>
+                )}
+              </form>
+            </div>
           )}
         </div>
       </div>

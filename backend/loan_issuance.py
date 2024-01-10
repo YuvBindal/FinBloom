@@ -10,26 +10,54 @@ from pprint import pprint
 from xrpl.models.transactions import Payment, Memo
 import json  # To convert the repayment schedule dictionary to a string
 import requests
+import asyncio
+import threading
 
-print("running")
+#print("running")
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient(JSON_RPC_URL)
-wallet1 = generate_faucet_wallet(client, debug=True)
-wallet2 = generate_faucet_wallet(client, debug=True)
+#wallet1 = generate_faucet_wallet(client, debug=True)
+#wallet2 = generate_faucet_wallet(client, debug=True)
 # Define your repayment schedule dictionary
-sample_repayment_schedule = {
-    "Effective_Interest_Rate": 0.1,
-    "Principal_Amount_SGD": 10000,
-    "Loan_Maturity_Years": 5,
-    "Total_Loan_Amount_SGD": 16105.1,
-    "Installments_Per_Year": 12,
-    "Installment_Amount": 268.42
-}
+#sample_repayment_schedule = {
+  #  "Effective_Interest_Rate": 0.1,
+    #"Principal_Amount_SGD": 10000,
+    #"Loan_Maturity_Years": 5,
+   # "Total_Loan_Amount_SGD": 16105.1,
+   # "Installments_Per_Year": 12,
+   # "Installment_Amount": 268.42
+#}
 
-print("running")
+#print("running")
 
 # on the testnet client
+
+
+
+def run_asyncio_loop(loop):
+    asyncio.set_event_loop(loop)
+    loop.run_forever()
+
+def run_async_function(func, *args):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    task = loop.create_task(func(*args))
+    loop.run_until_complete(task)
+    loop.close()
+
+async def generate_transaction_wallets_wrapper():
+    # Wrapper function to run the wallet generation in a separate thread
+    loop = asyncio.new_event_loop()
+    threading.Thread(target=run_async_function, args=(generate_transaction_wallets,)).start()
+
+
+def generate_transaction_wallets():
+    #establishes mock wallets to simulate financial transaction from lender to lendee
+    userWallet = generate_faucet_wallet(client, debug=True)
+    destinationWallet = generate_faucet_wallet(client, debug = True)
+
+    return [userWallet, destinationWallet]
 
 
 def generate_loan_transaction(client, wallet1, wallet2, repayment_schedule, loan_amount, currency):
@@ -108,8 +136,8 @@ def convert_to_xrp(amount, currency):
         return "Failed to fetch data from CoinGecko API."
 
 
-loan_amount = 1000  # Replace with your amount
+#loan_amount = 1000  # Replace with your amount
 currency = 'SGD'  # Replace with your currency code
 
-generate_loan_transaction(client, wallet1, wallet2,
-                          sample_repayment_schedule, loan_amount, currency)
+#generate_loan_transaction(client, wallet1, wallet2,
+                        #  sample_repayment_schedule, loan_amount, currency)
