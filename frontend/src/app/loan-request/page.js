@@ -29,6 +29,9 @@ export default function LoanRequestPage() {
   const [showForm, setShowForm] = useState(false);
   const [loanRequest, setLoanRequest] = useState({});
   const [userEligibility, setUserEligiblity] = useState(false);
+  const [llmResponse, setLLMResponse] = useState(
+    "Loading the calculated financing amount and repayment schedule based on your details!"
+  );
 
   const [loanDate, setLoanDate] = useState("");
   const [repaymentDate, setRepaymentDate] = useState("");
@@ -134,6 +137,8 @@ export default function LoanRequestPage() {
       if (response.ok) {
         const result = await response.json();
         console.log("Eligibility result:", result);
+        console.log(result.is_eligible);
+        setUserEligiblity(result.is_eligible);
         // Handle the result as needed
       } else {
         console.error("Error:", response.statusText);
@@ -143,6 +148,48 @@ export default function LoanRequestPage() {
       console.error("Error submitting eligiblity request: ", error);
     }
   };
+
+  const handleLLMResponse = async (e) => {
+    e.preventDefault();
+    try {
+      //1. run the ml model for eligib
+      // Make a POST request to the /eligible endpoint
+      
+      const userProfile = {
+        no_of_dependents: loanDependents,
+        education: loanEducation,
+        self_employed: loanEmployment,
+        income_annum: loanAnnualIncome,
+        loan_term: loanYears,
+        cibil_score: cibilScore,
+        residential_assets_value: rAssetValues,
+        commercial_assets_value: cAssetValues,
+        luxury_assets_value: lAssetValues,
+        bank_asset_value: bAssetValues,
+      }
+
+
+      const response = await fetch("http://127.0.0.1:8000/llm_prediction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userProfile),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        setLLMResponse(result);
+        // Handle the result as needed
+      } else {
+        console.error("Error:", response.statusText);
+        // Handle error response
+      }
+    } catch (error) {
+      console.error("Error submitting eligiblity request: ", error);
+    }
+  };  
 
   return (
     <div className="container flex">
@@ -384,19 +431,40 @@ export default function LoanRequestPage() {
         </h1>
         <div>
           {showForm && (
-            <form onSubmit={handleEligibleSubmission}>
-              <p>Current Loan Request</p>
-              <pre>{JSON.stringify(loanRequest, null, 2)}</pre>
-              <p>
-                Eligibility Status:{" "}
-                {userEligibility
-                  ? "You are eligible, now please check your eligibility details"
-                  : "You are not eligible/or have not submitted an evaluation request"}
-              </p>
-              <button type="submit" className="p-2 bg-blue-500 text-white">
-                Submit Evaluation
-              </button>
-            </form>
+            <div>
+              <form onSubmit={handleEligibleSubmission}>
+                <p>Current Loan Request</p>
+                <pre>{JSON.stringify(loanRequest, null, 2)}</pre>
+                <p>
+                  Eligibility Status:{" "}
+                  {userEligibility
+                    ? "You are eligible, now please check your eligibility details"
+                    : "You are not eligible/or have not submitted an evaluation request"}
+                </p>
+                <button type="submit" className="p-2 bg-blue-500 text-white">
+                  Submit Evaluation
+                </button>
+                {userEligibility && (
+                  <div>
+                    <button
+                      type="submit"
+                      className="p-2 bg-green-600 text-white"
+                      onClick={handleLLMResponse}
+                    >
+                      Check microloan details!
+                    </button>
+                    <pre>{JSON.stringify(llmResponse, null, 2)}</pre>
+                    <p>If you agree with these terms please hit continue!</p>
+                    <button
+                      type="submit"
+                      className="p-2 bg-green-600 text-white"
+                    >
+                      Transfer funds!
+                    </button>
+                  </div>
+                )}
+              </form>
+            </div>
           )}
         </div>
       </div>
