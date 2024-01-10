@@ -2,14 +2,14 @@ import pickle
 import pandas as pd
 
 # Load the model
-with open("loan_approval_rf_model.pkl", "rb") as f:
+with open("eligibility.pkl", "rb") as f:
     model = pickle.load(f)
 
 
 async def eligible(data: dict) -> bool:
     # Convert the data to a format that the model can understand
-    mapped = {key: [val] for key, val in data.items()}
-    data_for_prediction = pd.DataFrame().from_dict(mapped)
+    data_for_prediction = pd.DataFrame([data])
+
     # Use the model to make a prediction
     prediction = model.predict(data_for_prediction)
 
