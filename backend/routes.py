@@ -52,4 +52,5 @@ async def process_model_output(data: LoanData):
     # Call the function from the eligibility module
     is_eligible = await eligible(data_dict)
 
-    return {"is_eligible": is_eligible}
+    # Convert the output to a JSON
+    return {"is_eligible": "true" if is_eligible else "false"}
