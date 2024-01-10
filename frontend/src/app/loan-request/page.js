@@ -125,7 +125,7 @@ export default function LoanRequestPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(loanRequest),
+        body: 'hi',
       });
 
       if (response.ok) {
