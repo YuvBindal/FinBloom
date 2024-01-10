@@ -26,16 +26,21 @@ export default function LoanRequestPage() {
   const [rAssetValues, setRAssetValues] = useState("");
   const [lAssetValues, setLAssetValues] = useState("");
   const [bAssetValues, setBAssetValuess] = useState("");
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
   const [loanRequest, setLoanRequest] = useState({});
-  const [userEligibility, setUserEligiblity] = useState(false);
+  const [userEligibility, setUserEligiblity] = useState(true);
   const [llmResponse, setLLMResponse] = useState(
     "Loading the calculated financing amount and repayment schedule based on your details!"
   );
-
+  const [llmResponseSuccess, setLLMResponseSuccess] = useState(true);
+  const [walletID, setWalletID] = useState("r39DsJ1ZmuwgfbVvJTFBgVRdDC5wWufBsC");
+  const [destinationWalletID, setDestinationWalletID] = useState("rDGCeV8MbdhVNgHUErRQUKruYDxw5wmH1t");
+  const [showFundsConfirmation, setFundsConfirmation] = useState(false);
+  const [xrpRate, setXrpRate] = useState(0);
   const [loanDate, setLoanDate] = useState("");
   const [repaymentDate, setRepaymentDate] = useState("");
   const [previousLoans, setPreviousLoans] = useState([]);
+  const [walletBalance, setWalletBalance] = useState(6616860000);
 
   const router = useRouter();
 
@@ -147,6 +152,34 @@ export default function LoanRequestPage() {
     } catch (error) {
       console.error("Error submitting eligiblity request: ", error);
     }
+
+  };
+
+
+  const handleWallets = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://127.0.0.1:8000/wallets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        setWalletID(result[0]);
+        setDestinationWalletID(result[1]);
+        // Handle the result as needed
+      } else {
+        console.error("Error:", response.statusText);
+        // Handle error response
+      }
+    } catch (error) {
+      console.error("Error submitting wallets request: ", error);
+    }
+
   };
 
   const handleLLMResponse = async (e) => {
@@ -181,15 +214,47 @@ export default function LoanRequestPage() {
         const result = await response.json();
         console.log(result);
         setLLMResponse(result);
+        setLLMResponseSuccess(true);
         // Handle the result as needed
       } else {
         console.error("Error:", response.statusText);
         // Handle error response
       }
     } catch (error) {
-      console.error("Error submitting eligiblity request: ", error);
+      console.error("Error submitting llm request: ", error);
     }
+  
+
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/xrp_rate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        setXrpRate(result);
+        // Handle the result as needed
+      } else {
+        console.error("Error:", response.statusText);
+        // Handle error response
+      }
+
+
+    } catch (error) {
+      console.error("Error submitting xrp rate request:",)
+    }
+
+
   };  
+
+  const handleConfirmationMessage = async (e) => {
+    setFundsConfirmation(true);
+  }
 
   return (
     <div className="container flex">
@@ -454,13 +519,32 @@ export default function LoanRequestPage() {
                       Check microloan details!
                     </button>
                     <pre>{JSON.stringify(llmResponse, null, 2)}</pre>
-                    <p>If you agree with these terms please hit continue!</p>
+                    <p>If you agree with these terms, please generate a walletID to transfer your funds on the XRPL Chain</p>
+                    {llmResponseSuccess && (
+                      <p>The current exchange rate for 1 SGD = {JSON.stringify(xrpRate, null , 2)} XRP</p>
+                    )}
+  
+                    
+                    <p>Your Wallet ID: {JSON.stringify(walletID, null, 2)}</p>
+                    <p>Lender Wallet ID: {JSON.stringify(destinationWalletID, null , 2)}</p>
+                    
                     <button
                       type="submit"
                       className="p-2 bg-green-600 text-white"
+                      onClick = {handleConfirmationMessage}
                     >
-                      Transfer funds!
+                      Confirm Loan and Transfer funds!
                     </button>
+                    {showFundsConfirmation && (
+                      <div>
+                        <p>Congratulations on the loan! Your funds have been successfully transferred.</p>
+                        <p>Your wallet balance is XRP: {JSON.stringify(walletBalance/1_000_000, null, 2)}</p>
+                      </div>
+                    
+                    )}
+
+
+
                   </div>
                 )}
               </form>

@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from loans import sendPayment, repayLoan
 from eligibility import eligible
 from llm_functions import loan_prediction_and_repayment_generation
+from loan_issuance import convert_to_xrp, generate_loan_transaction, generate_transaction_wallets
 
 
 class LoanData(BaseModel):
@@ -67,6 +68,20 @@ async def repay_loan(data: UserProfile):
 
     return llm_response
 
+@router.post("/xrp_rate")
+async def xrp_rate():
+    # LLM model prediciting user loan amount and repayment schedule based on their profile
+    print("reached here !!!!!!!!!!!!!!!!!!!!!")
+    exchange_rate = convert_to_xrp(1, "SGD")
+
+    return exchange_rate
+
+@router.post("/wallets")
+async def wallets():
+    print("reached here !!!!!!!!!!!!!!!!!!!!!")
+    wallets =  await generate_transaction_wallets()
+
+    return wallets
 
 @router.post("/eligible")
 async def process_model_output(data: LoanData):
