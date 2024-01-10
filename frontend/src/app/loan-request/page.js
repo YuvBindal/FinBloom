@@ -83,20 +83,19 @@ export default function LoanRequestPage() {
       };
 
       setLoanRequest({
-        loanId: loanId,
-        loanDP: loanDependents,
-        loanED: loanEducation,
-        loanSE: loanEmployment,
-        loanIA: loanAnnualIncome,
-        loanTerm: loanYears,
-        cibil: cibilScore,
-        rAssets: rAssetValues,
-        cAssets: cAssetValues,
-        lAssets: lAssetValues,
-        bAssets: bAssetValues,
-        email: user.email,
+        "loan_id": "69",
+        "no_of_dependents": loanDependents,
+        "education": loanEducation,
+        "self_employed": loanEmployment,
+        "income_annum": loanAnnualIncome,
+        "loan_amount": loanAmount,
+        "loan_term": loanYears,
+        "cibil_score": cibilScore,
+        "residential_assets_value": rAssetValues,
+        "commercial_assets_value": cAssetValues,
+        "luxury_assets_value": lAssetValues,
+        "bank_asset_value": bAssetValues,
       });
-
       const loanRequestWithDefaults = Object.fromEntries(
         Object.entries(loanRequest).map(([key, value]) => {
           // Check if the value is empty (i.e., an empty string or undefined)
@@ -117,7 +116,24 @@ export default function LoanRequestPage() {
   const handleEligibleSubmission = async (e) => {
     e.preventDefault();
     try {
-      
+      //1. run the ml model for eligib
+       // Make a POST request to the /eligible endpoint
+      const response = await fetch("http://127.0.0.1:8000/eligible", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loanRequest),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Eligibility result:", result);
+        // Handle the result as needed
+      } else {
+        console.error("Error:", response.statusText);
+        // Handle error response
+      }
 
     } catch (error) {
       console.error("Error submitting eligiblity request: ", error)
