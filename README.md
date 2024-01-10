@@ -4,7 +4,19 @@ A DeFi web application for microloans built using XPRL
 
 ## Run server
 
+```
+cd backend;
+
 python -m uvicorn server:app --reload
+```
+
+## Run the frontend
+
+```
+cd frontend;
+
+npm run dev
+```
 
 ## Test if its working
 
