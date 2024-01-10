@@ -47,6 +47,8 @@ async def repay_loan():
 @router.post("/eligible")
 async def process_model_output(data: LoanData):
     # Convert the data to a dictionary
+
+    print("reached here !!!!!!!!!!!!!!!!!!!!!")
     data_dict = data.dict()
 
     # Call the function from the eligibility module

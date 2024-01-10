@@ -1,7 +1,14 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
-import { doc, setDoc, collection, addDoc, query, getDocs } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  collection,
+  addDoc,
+  query,
+  getDocs,
+} from "firebase/firestore";
 import { auth, db } from "../firebase-config";
 import { UserAuth } from "../utils/auth-helper";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -39,7 +46,7 @@ export default function LoanRequestPage() {
     } else {
       // User is signed out
       // ...
-      console.log("user not found")
+      console.log("user not found");
       setUser(null);
     }
   });
@@ -48,7 +55,6 @@ export default function LoanRequestPage() {
     if (!router.isReady || !user) {
       return;
     }
-
 
     // Fetch previous loan requests from Firestore
     const fetchPreviousLoans = async () => {
@@ -83,28 +89,27 @@ export default function LoanRequestPage() {
       };
 
       setLoanRequest({
-        "loan_id": "69",
-        "no_of_dependents": loanDependents,
-        "education": loanEducation,
-        "self_employed": loanEmployment,
-        "income_annum": loanAnnualIncome,
-        "loan_amount": loanAmount,
-        "loan_term": loanYears,
-        "cibil_score": cibilScore,
-        "residential_assets_value": rAssetValues,
-        "commercial_assets_value": cAssetValues,
-        "luxury_assets_value": lAssetValues,
-        "bank_asset_value": bAssetValues,
+        loan_id: "69",
+        no_of_dependents: loanDependents,
+        education: loanEducation,
+        self_employed: loanEmployment,
+        income_annum: loanAnnualIncome,
+        loan_amount: loanAmount,
+        loan_term: loanYears,
+        cibil_score: cibilScore,
+        residential_assets_value: rAssetValues,
+        commercial_assets_value: cAssetValues,
+        luxury_assets_value: lAssetValues,
+        bank_asset_value: bAssetValues,
       });
       const loanRequestWithDefaults = Object.fromEntries(
         Object.entries(loanRequest).map(([key, value]) => {
           // Check if the value is empty (i.e., an empty string or undefined)
           // and set it to 0 if it's empty
-          return [key, value === '' || value === undefined ? 0 : value];
+          return [key, value === "" || value === undefined ? 0 : value];
         })
       );
 
-      
       await setDoc(doc(db, "loan_requests", loanId), loanRequestWithDefaults);
       setShowForm(true);
       //await addDoc(collection(db, "users", user.uid, "loans"), loanData);
@@ -117,7 +122,7 @@ export default function LoanRequestPage() {
     e.preventDefault();
     try {
       //1. run the ml model for eligib
-       // Make a POST request to the /eligible endpoint
+      // Make a POST request to the /eligible endpoint
       const response = await fetch("http://127.0.0.1:8000/eligible", {
         method: "POST",
         headers: {
@@ -134,18 +139,19 @@ export default function LoanRequestPage() {
         console.error("Error:", response.statusText);
         // Handle error response
       }
-
     } catch (error) {
-      console.error("Error submitting eligiblity request: ", error)
+      console.error("Error submitting eligiblity request: ", error);
     }
-  }
+  };
 
   return (
     <div className="container flex">
       <div className="w-1/2 p-4">
-        <h1><strong>Loan Issuance Request</strong></h1>
+        <h1>
+          <strong>Loan Issuance Request</strong>
+        </h1>
         <form onSubmit={handleSubmit} style={{ color: "black" }}>
-        <div className="form-group mb-4">
+          <div className="form-group mb-4">
             <label
               htmlFor="loanDependents"
               className="block mb-2"
@@ -371,27 +377,29 @@ export default function LoanRequestPage() {
           </button>
         </form>
       </div>
-      
-      
-      
+
       <div className="w-1/2 p-4">
-        <h1><strong>Loan Eligiblity Checker</strong></h1>
+        <h1>
+          <strong>Loan Eligiblity Checker</strong>
+        </h1>
         <div>
           {showForm && (
-          <form onSubmit={handleEligibleSubmission}>
-            <p>Current Loan Request</p>
-            <pre>{JSON.stringify(loanRequest, null, 2)}</pre>
-            <p>Eligibility Status: {userEligibility ? "You are eligible, now please check your eligibility details": "You are not eligible/or have not submitted an evaluation request"}</p>
-            <button type="submit" className="p-2 bg-blue-500 text-white">
-              Submit Evaluation
-            </button>
-          </form>
+            <form onSubmit={handleEligibleSubmission}>
+              <p>Current Loan Request</p>
+              <pre>{JSON.stringify(loanRequest, null, 2)}</pre>
+              <p>
+                Eligibility Status:{" "}
+                {userEligibility
+                  ? "You are eligible, now please check your eligibility details"
+                  : "You are not eligible/or have not submitted an evaluation request"}
+              </p>
+              <button type="submit" className="p-2 bg-blue-500 text-white">
+                Submit Evaluation
+              </button>
+            </form>
           )}
         </div>
-
-
       </div>
-      
     </div>
   );
 }

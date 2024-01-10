@@ -6,7 +6,8 @@ model = pickle.load(open("eligibility_check_model.pkl", "rb"))
 
 
 async def eligible(data: dict) -> bool:
-    cleaned = {key: int(value) for key, value in data.items()}
+    cleaned = {key: int(value) if value !=
+               '' else 0 for key, value in data.items()}
 
     # Convert the data to a format that the model can understand
     data_for_prediction = pd.DataFrame([cleaned])
