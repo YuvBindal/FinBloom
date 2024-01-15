@@ -62,6 +62,21 @@ const Card = ({ title, description, link }) => {
   );
 };
 
+const LoanProvider = ({ provider }) => {
+  return (
+    <div key={provider.id} className="border p-4 rounded shadow-lg">
+      <img src="/path-to-logo.jpg" alt="Logo" className="provider-logo mb-2" />
+      <h3 className="text-xl font-semibold">{provider.name}</h3>
+      <p className="mb-3">{provider.description}</p>
+      <Link href={`/loan-request?provider=${provider.id}`} legacyBehavior>
+        <a className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300">
+          Select
+        </a>
+      </Link>
+    </div>
+  );
+};
+
 export default function HomePage() {
   const [userData, setUserData] = useState([]);
 
@@ -96,23 +111,7 @@ export default function HomePage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {loanProviders.map((provider) => (
-            <div key={provider.id} className="border p-4 rounded shadow-lg">
-              <img
-                src="/path-to-logo.jpg"
-                alt="Logo"
-                className="provider-logo mb-2"
-              />
-              <h3 className="text-xl font-semibold">{provider.name}</h3>
-              <p className="mb-3">{provider.description}</p>
-              <Link
-                href={`/loan-request?provider=${provider.id}`}
-                legacyBehavior
-              >
-                <a className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300">
-                  Select
-                </a>
-              </Link>
-            </div>
+            <LoanProvider key={provider.id} provider={provider} />
           ))}
         </div>
       </div>
