@@ -257,19 +257,18 @@ export default function LoanRequestPage() {
   }
 
   return (
-    <div className="container flex">
-      <div className="w-1/2 p-4">
-        <h1>
-          <strong>Loan Issuance Request</strong>
+    <div className="container mx-auto p-4 flex flex-wrap justify-between">
+      {/* Loan Issuance Request Section */}
+      <div className="w-full lg:w-1/2 p-4 bg-black text-white">
+        <h1 className="text-3xl font-bold mb-6 border-b-2 border-white pb-2">
+          Loan Issuance Request
         </h1>
-        <form onSubmit={handleSubmit} style={{ color: "black" }}>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="loanDependents"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Number of dependents
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Number of Dependents */}
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+            <label htmlFor="loanDependents" className="block font-medium mb-2">
+              Number of Dependents
             </label>
             <input
               type="number"
@@ -277,286 +276,248 @@ export default function LoanRequestPage() {
               value={loanDependents}
               onChange={(e) => setLoanDependents(e.target.value)}
               placeholder="If none enter 0"
-              className="w-full p-2"
-            />
-          </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="loanEducation"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Set your education level
-            </label>
-            <input
-              type="number"
-              id="loanEducation"
-              value={loanEducation}
-              onChange={(e) => setLoanEducation(e.target.value)}
-              placeholder="Enter 0/1 if not graduate/graduate respectively"
-              className="w-full p-2"
-            />
-          </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="loanEmployment"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Set your self-employed status
-            </label>
-            <input
-              type="number"
-              id="loanEmployment"
-              value={loanEmployment}
-              onChange={(e) => setLoanEmployment(e.target.value)}
-              placeholder="Enter 0/1 if not/is self-employed respectively"
-              className="w-full p-2"
-            />
-          </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="loanAnnualIncome"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Enter your annual income
-            </label>
-            <input
-              type="number"
-              id="loanAnnualIncome"
-              value={loanAnnualIncome}
-              onChange={(e) => setLoanAnnualIncome(e.target.value)}
-              placeholder="Values in SGD"
-              className="w-full p-2"
-            />
-          </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="loanAmount"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Loan Amount
-            </label>
-            <input
-              type="number"
-              id="loanAmount"
-              value={loanAmount}
-              onChange={(e) => setLoanAmount(e.target.value)}
-              placeholder="Enter loan amount"
-              className="w-full p-2"
+              className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          <div className="form-group mb-4">
-            <label
-              htmlFor="loanDate"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Preferred Date of Loan
-            </label>
-            <input
-              type="date"
-              id="loanDate"
-              value={loanDate}
-              onChange={(e) => setLoanDate(e.target.value)}
-              className="w-full p-2"
-            />
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="loanEducation" className="block mb-2">
+                  Set Your Education Level
+              </label>
+              <input
+                  type="number"
+                  id="loanEducation"
+                  value={loanEducation}
+                  onChange={(e) => setLoanEducation(e.target.value)}
+                  placeholder="Enter 0/1 if not graduate/graduate respectively"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
           </div>
 
-          <div className="form-group mb-4">
-            <label
-              htmlFor="repaymentDate"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Preferred Maturity/Termination Date of Loan
-            </label>
-            <input
-              type="date"
-              id="repaymentDate"
-              value={repaymentDate}
-              onChange={(e) => setRepaymentDate(e.target.value)}
-              className="w-full p-2"
-            />
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="loanEmployment" className="block mb-2">
+                  Set Your Self-Employed Status
+              </label>
+              <input
+                  type="number"
+                  id="loanEmployment"
+                  value={loanEmployment}
+                  onChange={(e) => setLoanEmployment(e.target.value)}
+                  placeholder="Enter 0/1 if not/is self-employed respectively"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
           </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="loanYears"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Total Repayment Years of Loan
-            </label>
-            <input
-              type="number"
-              id="loanYears"
-              value={loanYears}
-              onChange={(e) => setLoanYears(e.target.value)}
-              placeholder="Enter Loan Years"
-              className="w-full p-2"
-            />
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="loanAnnualIncome" className="block mb-2">
+                  Enter Your Annual Income
+              </label>
+              <input
+                  type="number"
+                  id="loanAnnualIncome"
+                  value={loanAnnualIncome}
+                  onChange={(e) => setLoanAnnualIncome(e.target.value)}
+                  placeholder="Enter your annual income in SGD"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
           </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="cibilScore"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Cibil Score
-            </label>
-            <input
-              type="number"
-              id="loanYears"
-              value={cibilScore}
-              onChange={(e) => setCibilScore(e.target.value)}
-              placeholder="Between 300 to 900, if not available enter 0"
-              className="w-full p-2"
-            />
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="loanAmount" className="block mb-2">
+                Loan Amount
+              </label>
+              <input
+                  type="number"
+                  id="loanAmount"
+                  value={loanAmount}
+                  onChange={(e) => setLoanAmount(e.target.value)}
+                  placeholder="Enter loan amount"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
           </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="rAssetValues"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Residential Asset Values
-            </label>
-            <input
-              type="number"
-              id="rAssetValues"
-              value={rAssetValues}
-              onChange={(e) => setRAssetValues(e.target.value)}
-              placeholder="Properties such as houses, amount in SGD. Enter 0 if none"
-              className="w-full p-2"
-            />
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="loanDate" className="block mb-2">
+                Preferred Date of Loan
+              </label>
+              <input
+                  type="date"
+                  id="loanDate"
+                  value={loanDate}
+                  onChange={(e) => setLoanDate(e.target.value)}
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
           </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="cAssetValues"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Commerical Asset Values
-            </label>
-            <input
-              type="number"
-              id="cAssetValues"
-              value={cAssetValues}
-              onChange={(e) => setCAssetValues(e.target.value)}
-              placeholder="Properties such as shops, amount in SGD. Enter 0 if none."
-              className="w-full p-2"
-            />
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="repaymentDate" className="block mb-2">
+                Preferred Maturity/Termination Date of Loan
+              </label>
+              <input
+                  type="date"
+                  id="repaymentDate"
+                  value={repaymentDate}
+                  onChange={(e) => setRepaymentDate(e.target.value)}
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
           </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="lAssetValues"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Luxury Asset Values
-            </label>
-            <input
-              type="number"
-              id="lAssetValues"
-              value={lAssetValues}
-              onChange={(e) => setLAssetValues(e.target.value)}
-              placeholder="Fine art, paintings, jewelery, amount in SGD. Enter 0 if none"
-              className="w-full p-2"
-            />
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="loanYears" className="block mb-2">
+                Total Repayment Years of Loan
+              </label>
+              <input
+                  type="number"
+                  id="loanYears"
+                  value={loanYears}
+                  onChange={(e) => setLoanYears(e.target.value)}
+                  placeholder="Enter Loan Years"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
           </div>
-          <div className="form-group mb-4">
-            <label
-              htmlFor="bAssetValues"
-              className="block mb-2"
-              style={{ color: "white" }}
-            >
-              Current Bank Balance
-            </label>
-            <input
-              type="number"
-              id="bAssetValues"
-              value={bAssetValues}
-              onChange={(e) => setBAssetValuess(e.target.value)}
-              placeholder="Amount in your bank account, in SGD. Enter 0 if none"
-              className="w-full p-2"
-            />
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="cibilScore" className="block mb-2">
+                Cibil Score
+              </label>
+              <input
+                  type="number"
+                  id="cibilScore"
+                  value={cibilScore}
+                  onChange={(e) => setCibilScore(e.target.value)}
+                  placeholder="Between 300 to 900, if not available enter 0"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
           </div>
-          <button type="submit" className="p-2 bg-blue-500 text-white">
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="rAssetValues" className="block mb-2">
+                Residential Asset Values
+              </label>
+              <input
+                  type="number"
+                  id="rAssetValues"
+                  value={rAssetValues}
+                  onChange={(e) => setRAssetValues(e.target.value)}
+                  placeholder="Between 300 to 900, if not available enter 0"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+          </div>
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="cAssetValues" className="block mb-2">
+                Commerical Asset Values
+              </label>
+              <input
+                  type="number"
+                  id="cAssetValues"
+                  value={cAssetValues}
+                  onChange={(e) => setCAssetValues(e.target.value)}
+                  placeholder="Properties such as shops, amount in SGD. Enter 0 if none."
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+          </div>
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="lAssetValues" className="block mb-2">
+                Luxury Asset Values
+              </label>
+              <input
+                  type="number"
+                  id="lAssetValues"
+                  value={lAssetValues}
+                  onChange={(e) => setLAssetValues(e.target.value)}
+                  placeholder="Fine art, paintings, jewelry, amount in SGD. Enter 0 if none"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+          </div>
+
+          <div className="form-group mb-4 p-4 border-2 border-white rounded-lg">
+              <label htmlFor="bAssetValues" className="block mb-2">
+                Current Bank Balance
+              </label>
+              <input
+                  type="number"
+                  id="bAssetValues"
+                  value={bAssetValues}
+                  onChange={(e) => setBAssetValuess(e.target.value)}
+                  placeholder="Amount in your bank account, in SGD. Enter 0 if none"
+                  className="w-full p-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit" className="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out">
             Submit Request
           </button>
         </form>
       </div>
 
-      <div className="w-1/2 p-4">
-        <h1>
-          <strong>Loan Eligiblity Checker</strong>
-        </h1>
-        <div>
-          {showForm && (
-            <div>
-              <form onSubmit={handleEligibleSubmission}>
-                <p>Current Loan Request</p>
-                <pre>{JSON.stringify(loanRequest, null, 2)}</pre>
-                <p>
-                  Eligibility Status:{" "}
-                  {userEligibility
-                    ? "You are eligible, now please check your eligibility details"
-                    : "You are not eligible/or have not submitted an evaluation request"}
-                </p>
-                <button type="submit" className="p-2 bg-blue-500 text-white">
-                  Submit Evaluation
-                </button>
-                {userEligibility && (
-                  <div>
-                    <button
-                      type="submit"
-                      className="p-2 bg-green-600 text-white"
-                      onClick={handleLLMResponse}
-                    >
-                      Check microloan details!
-                    </button>
-                    <pre>{JSON.stringify(llmResponse, null, 2)}</pre>
-                    <p>If you agree with these terms, please generate a walletID to transfer your funds on the XRPL Chain</p>
-                    {llmResponseSuccess && (
-                      <p>The current exchange rate for 1 SGD = {JSON.stringify(xrpRate, null , 2)} XRP</p>
-                    )}
-  
-                    
-                    <p>Your Wallet ID: {JSON.stringify(walletID, null, 2)}</p>
-                    <p>Lender Wallet ID: {JSON.stringify(destinationWalletID, null , 2)}</p>
-                    
-                    <button
-                      type="submit"
-                      className="p-2 bg-green-600 text-white"
-                      onClick = {handleConfirmationMessage}
-                    >
-                      Confirm Loan and Transfer funds!
-                    </button>
-                    {showFundsConfirmation && (
-                      <div>
-                        <p>Congratulations on the loan! Your funds have been successfully transferred.</p>
-                        <p>Your wallet balance is XRP: {JSON.stringify(walletBalance/1_000_000, null, 2)}</p>
-                      </div>
-                    
-                    )}
+      {/* Loan Eligibility Checker Section */}
+      <div className="w-full lg:w-1/2 p-4 bg-black text-white overflow-hidden">
+          <h1 className="text-3xl font-bold mb-6 border-b-2 border-white pb-2">
+              Loan Eligibility Checker
+          </h1>
+          <div>
+              {showForm && (
+                  <div className="space-y-4">
+                      <form onSubmit={handleEligibleSubmission} className="p-4 border-2 border-white rounded-lg overflow-auto">
+                          <p className="font-medium">Current Loan Request</p>
+                          <pre className="bg-gray-800 p-3 rounded-md overflow-x-auto">{JSON.stringify(loanRequest, null, 2)}</pre>
 
+                          <p className="font-medium">
+                              Eligibility Status:{" "}
+                              {userEligibility
+                                  ? "You are eligible, now please check your eligibility details"
+                                  : "You are not eligible/or have not submitted an evaluation request"}
+                          </p>
+                          <button type="submit" className="w-full p-3 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out">
+                            Submit Evaluation
+                          </button>
+                          {userEligibility && (
+                              <div className="space-y-4 mt-4">
+                                  <button
+                                      type="button"
+                                      className="w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-150 ease-in-out"
+                                      onClick={handleLLMResponse}
+                                  >
+                                      Check Microloan Details!
+                                  </button>
+                                  <pre className="bg-gray-800 p-3 rounded-md whitespace-pre-wrap">{JSON.stringify(llmResponse, null, 2)}</pre>
+                                  <p>If you agree with these terms, please generate a walletID to transfer your funds on the XRPL Chain.</p>
+                                  {llmResponseSuccess && (
+                                      <p>The current exchange rate for 1 SGD = {JSON.stringify(xrpRate, null, 2)} XRP</p>
+                                  )}
 
+                                  <p>Your Wallet ID: {JSON.stringify(walletID, null, 2)}</p>
+                                  <p>Lender Wallet ID: {JSON.stringify(destinationWalletID, null, 2)}</p>
+                                  
+                                  <button
+                                      type="button"
+                                      className="w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-150 ease-in-out"
+                                      onClick={handleConfirmationMessage}
+                                  >
+                                      Confirm Loan and Transfer Funds!
+                                  </button>
+                                  {showFundsConfirmation && (
+                                      <div className="mt-4">
+                                          <p>Congratulations on the loan! Your funds have been successfully transferred.</p>
+                                          <p>Your wallet balance is XRP: {JSON.stringify(walletBalance / 1_000_000, null, 2)}</p>
+                                      </div>
+                                  )}
+                                </div>
+                            )}
 
+                      </form>
                   </div>
                 )}
-              </form>
             </div>
-          )}
         </div>
-      </div>
     </div>
   );
 }
-/*
 
+/*
 <div className="w-1/2 p-4">
         <h2>Previous Loan Requests</h2>
         <ul>
@@ -568,5 +529,5 @@ export default function LoanRequestPage() {
           ))}
         </ul>
       </div>
+*/
 
-      */
