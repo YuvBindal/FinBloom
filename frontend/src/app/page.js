@@ -64,12 +64,30 @@ const Card = ({ title, description, link }) => {
 
 const LoanProvider = ({ provider }) => {
   return (
-    <div key={provider.id} className="border p-4 rounded shadow-lg">
-      <img src="/path-to-logo.jpg" alt="Logo" className="provider-logo mb-2" />
-      <h3 className="text-xl font-semibold">{provider.name}</h3>
-      <p className="mb-3">{provider.description}</p>
+    <div
+      key={provider.id}
+      className="border-2 border-gray-200 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 flex flex-col items-center justify-center"
+    >
+      <img
+        src="/path-to-logo.jpg"
+        alt="Logo"
+        className="provider-logo mb-4 w-20 h-8 object-cover rounded-full mx-auto shadow"
+      />
+      <h3 className="text-2xl font-bold text-gray-400 mb-2 text-center">
+        {provider.name}
+      </h3>
+      <p className="text-gray-400 text-center">{provider.description}</p>
       <Link href={`/loan-request?provider=${provider.id}`} legacyBehavior>
-        <a className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300">
+        <a
+          className="mt-4 inline-block border-[2px] text-white
+           py-2 px-4 rounded hover:bg-green-500 hover:text-white hover:border-green-500 transition-colors duration-200"
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           Select
         </a>
       </Link>
