@@ -135,22 +135,27 @@ export default function HomePage() {
       </div>
 
       {/* Flex Grid */}
-      <div className="grid grid-cols-3 gap-4">
-        <Card
-          title="Loan Issuance Request"
-          description="Apply for a loan quickly and easily."
-          link="/loan-request"
-        />
-        <Card
-          title="Credit Score Evaluation"
-          description="Check your credit score."
-          link="/credit-score"
-        />
-        <Card
-          title="Repayment Schedule"
-          description="View your repayment schedule and track your loan status."
-          link="/repayment-schedule"
-        />
+      <div className="my-8">
+        <h2 className="text-2xl font-semibold mb-4">
+          Explore Our Financial Solutions
+        </h2>
+        <div className="grid grid-cols-3 gap-4">
+          <Card
+            title="Loan Issuance Request"
+            description="Apply for a loan quickly and easily."
+            link="/loan-request"
+          />
+          <Card
+            title="Credit Score Evaluation"
+            description="Check your credit score."
+            link="/credit-score"
+          />
+          <Card
+            title="Repayment Schedule"
+            description="View your repayment schedule and track your loan status."
+            link="/repayment-schedule"
+          />
+        </div>
       </div>
     </div>
   );
