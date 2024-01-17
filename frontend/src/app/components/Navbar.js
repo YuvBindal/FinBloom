@@ -37,7 +37,7 @@ const Navbar = () => {
           <Link href="/">Home</Link>
         </li>
         <li className="p-2 cursor-pointer">
-          <Link href="/credit-score">Credit Score</Link>
+          <Link href="/loan-request-history">Loan Request History</Link>
         </li>
         <li className="p-2 cursor-pointer">
           <Link href="/loan-request">Loan Request</Link>
