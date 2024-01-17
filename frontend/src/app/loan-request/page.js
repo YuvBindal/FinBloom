@@ -27,13 +27,13 @@ export default function LoanRequestPage() {
   const [rAssetValues, setRAssetValues] = useState("");
   const [lAssetValues, setLAssetValues] = useState("");
   const [bAssetValues, setBAssetValuess] = useState("");
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const [loanRequest, setLoanRequest] = useState({});
-  const [userEligibility, setUserEligiblity] = useState(true);
+  const [userEligibility, setUserEligiblity] = useState(false);
   const [llmResponse, setLLMResponse] = useState(
     "Loading the calculated financing amount and repayment schedule based on your details!"
   );
-  const [llmResponseSuccess, setLLMResponseSuccess] = useState(true);
+  const [llmResponseSuccess, setLLMResponseSuccess] = useState(false);
   const [walletID, setWalletID] = useState("");
   const [destinationWalletID, setDestinationWalletID] = useState("");
   const [showFundsConfirmation, setFundsConfirmation] = useState(false);
