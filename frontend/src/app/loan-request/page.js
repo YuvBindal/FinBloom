@@ -27,7 +27,7 @@ export default function LoanRequestPage() {
   const [rAssetValues, setRAssetValues] = useState("");
   const [lAssetValues, setLAssetValues] = useState("");
   const [bAssetValues, setBAssetValuess] = useState("");
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
   const [loanRequest, setLoanRequest] = useState({});
   const [userEligibility, setUserEligiblity] = useState(false);
   const [llmResponse, setLLMResponse] = useState(
@@ -160,6 +160,7 @@ export default function LoanRequestPage() {
 
 
   async function generate_wallets_and_transaction() {
+    setLoader(true)
     if (!showFundsConfirmation) {
       const xrpl = require("xrpl"); // Dependency xrpl required
       const api = new xrpl.Client("wss://s.altnet.rippletest.net:51233"); // Testnet connection
@@ -205,9 +206,12 @@ export default function LoanRequestPage() {
       } catch (error) {
 
         console.error("Error:", error);
-      } 
+      } finally {
+        setLoader(false);
+      }
     } else {
       console.log('your transaction has already been sent!')
+      setLoader(false);
     }
   }
 
@@ -587,6 +591,23 @@ export default function LoanRequestPage() {
           )}
         </div>
       </div>
+
+      {loader && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="text-white">Processing your transaction...</div>
+          {/* You can add a spinner or any loading animation here */}
+        </div>
+      )}
+
+      {/* Button for confirming loan and transfer */}
+      <button
+        type="button"
+        className={`w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-150 ease-in-out ${loader ? 'opacity-50 cursor-not-allowed' : ''}`}
+        onClick={generate_wallets_and_transaction}
+        disabled={loader} // Disable the button when loading
+      >
+        Confirm Loan and Transfer Funds!
+      </button>
     </div>
   );
 }
