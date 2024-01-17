@@ -88,7 +88,12 @@ export default function LoanRequestPage() {
     //if (!user) return; // Ensure user is logged in
 
     try {
+      const userEmail = user.email;
       const loanId = `loan${Math.random().toString(16).slice(2)}`;
+      const currentDate = new Date();
+
+
+      const combinedId = loanId+"-"+userEmail+"-"+currentDate;
       const loanData = {
         loanId: loanId,
         isEligible: true,
@@ -98,9 +103,10 @@ export default function LoanRequestPage() {
         dateTaken: loanDate,
         repayed: false,
       };
+      console.log(user.email);
 
       setLoanRequest({
-        loan_id: "69",
+        loan_id: loanId,
         no_of_dependents: loanDependents,
         education: loanEducation,
         self_employed: loanEmployment,
@@ -121,7 +127,7 @@ export default function LoanRequestPage() {
         })
       );
 
-      await setDoc(doc(db, "loan_requests", loanId), loanRequestWithDefaults);
+      await setDoc(doc(db, "loan_requests", combinedId), loanRequestWithDefaults);
       setShowForm(true);
       //await addDoc(collection(db, "users", user.uid, "loans"), loanData);
     } catch (error) {
@@ -157,8 +163,8 @@ export default function LoanRequestPage() {
     }
   };
 
-
-
+ 
+  //Migrated xrpl-py code to xrpl-js onto the frontend as FastAPI is incompatible with xrpl-py due to asynchronous errors.
   async function generate_wallets_and_transaction() {
     setLoader(true)
     if (!showFundsConfirmation) {
