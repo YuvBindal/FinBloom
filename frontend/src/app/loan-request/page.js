@@ -29,7 +29,7 @@ export default function LoanRequestPage() {
   const [bAssetValues, setBAssetValuess] = useState("");
   const [showForm, setShowForm] = useState(true);
   const [loanRequest, setLoanRequest] = useState({});
-  const [userEligibility, setUserEligiblity] = useState(true);
+  const [userEligibility, setUserEligiblity] = useState(false);
   const [llmResponse, setLLMResponse] = useState(
     "Loading the calculated financing amount and repayment schedule based on your details!"
   );
