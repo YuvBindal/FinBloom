@@ -52,13 +52,16 @@ async def generate_transaction_wallets_wrapper():
     threading.Thread(target=run_async_function, args=(generate_transaction_wallets,)).start()
 
 
-def generate_transaction_wallets():
-    #establishes mock wallets to simulate financial transaction from lender to lendee
-    userWallet = generate_faucet_wallet(client, debug=True)
-    destinationWallet = generate_faucet_wallet(client, debug = True)
+async def generate_faucet_wallet_async(client, debug=False):
+    return await generate_faucet_wallet(client, debug=debug)
 
-    return [userWallet, destinationWallet]
-
+async def generate_transaction_wallets():
+    # Your asynchronous logic here...
+    user_wallet = await generate_faucet_wallet_async(client, debug=True)
+    destination_wallet = await generate_faucet_wallet_async(client, debug=True)
+    
+    await asyncio.sleep(5)
+    return user_wallet
 
 def generate_loan_transaction(client, wallet1, wallet2, repayment_schedule, loan_amount, currency):
 

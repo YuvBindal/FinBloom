@@ -1,12 +1,13 @@
 from fastapi import APIRouter
 from requests import request
 from pydantic import BaseModel
+import asyncio
 
 # import the modules containing the functions you need
 from loans import sendPayment, repayLoan
 from eligibility import eligible
 from llm_functions import loan_prediction_and_repayment_generation
-from loan_issuance import convert_to_xrp, generate_loan_transaction, generate_transaction_wallets
+from loan_issuance import convert_to_xrp, generate_loan_transaction, generate_transaction_wallets, generate_transaction_wallets_wrapper
 
 
 class LoanData(BaseModel):
@@ -79,9 +80,10 @@ async def xrp_rate():
 @router.post("/wallets")
 async def wallets():
     print("reached here !!!!!!!!!!!!!!!!!!!!!")
-    wallets =  await generate_transaction_wallets()
+    wallet = await generate_transaction_wallets()
+    print(wallet)
 
-    return wallets
+    return wallet
 
 @router.post("/eligible")
 async def process_model_output(data: LoanData):
