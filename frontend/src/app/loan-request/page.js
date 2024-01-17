@@ -29,7 +29,7 @@ export default function LoanRequestPage() {
   const [bAssetValues, setBAssetValuess] = useState("");
   const [showForm, setShowForm] = useState(true);
   const [loanRequest, setLoanRequest] = useState({});
-  const [userEligibility, setUserEligiblity] = useState(false);
+  const [userEligibility, setUserEligiblity] = useState(true);
   const [llmResponse, setLLMResponse] = useState(
     "Loading the calculated financing amount and repayment schedule based on your details!"
   );
@@ -567,8 +567,9 @@ export default function LoanRequestPage() {
 
                     <button
                       type="button"
-                      className="w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-150 ease-in-out"
+                      className={`w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-150 ease-in-out ${loader ? 'opacity-50 cursor-not-allowed' : ''}`}
                       onClick={generate_wallets_and_transaction}
+                      disabled={loader}
                     >
                       Confirm Loan and Transfer Funds!
                     </button>
@@ -592,22 +593,13 @@ export default function LoanRequestPage() {
         </div>
       </div>
 
+      {/* Spinner */}
       {loader && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="text-white">Processing your transaction...</div>
-          {/* You can add a spinner or any loading animation here */}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="spinner"></div>
+          <div className="text-white ml-4">Processing your transaction...</div>
         </div>
       )}
-
-      {/* Button for confirming loan and transfer */}
-      <button
-        type="button"
-        className={`w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-150 ease-in-out ${loader ? 'opacity-50 cursor-not-allowed' : ''}`}
-        onClick={generate_wallets_and_transaction}
-        disabled={loader} // Disable the button when loading
-      >
-        Confirm Loan and Transfer Funds!
-      </button>
     </div>
   );
 }
