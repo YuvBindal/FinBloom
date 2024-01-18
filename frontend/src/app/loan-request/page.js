@@ -250,6 +250,11 @@ export default function LoanRequestPage() {
       //1. run the ml model for eligib
       // Make a POST request to the /eligible endpoint
 
+      const userEmail = user.email;
+      const loanId = `loan${Math.random().toString(16).slice(2)}`;
+      const currentDate = new Date();
+      const combinedId = loanId+"-"+userEmail+"-"+currentDate;
+
       const userProfile = {
         no_of_dependents: loanDependents,
         education: loanEducation,
@@ -276,6 +281,7 @@ export default function LoanRequestPage() {
         console.log(result);
         setLLMResponse(result);
         setLLMResponseSuccess(true);
+        await setDoc(doc(db, "repayment_schedule", combinedId), llmResponse);
         // Handle the result as needed
       } else {
         console.error("Error:", response.statusText);
