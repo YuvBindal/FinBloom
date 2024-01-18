@@ -4,10 +4,6 @@ import pandas as pd
 import google.generativeai as genai
 
 import os
-from dotenv import load_dotenv
-
-# load up the .env file
-load_dotenv()
 
 # get the API key
 API_KEY = os.getenv('APIKEY')
