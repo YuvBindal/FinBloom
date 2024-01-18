@@ -298,11 +298,11 @@ export default function LoanRequestPage() {
           "Content-Type": "application/json",
         },
       });
-      setXrpRate("1.32");
 
       if (response.ok) {
         const result = await response.json();
         console.log(result);
+        setXrpRate(result);
         // Handle the result as needed
       } else {
         console.error("Error:", response.statusText);

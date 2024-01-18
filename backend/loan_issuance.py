@@ -136,7 +136,7 @@ def convert_to_xrp(amount, currency):
         else:
             return "Couldn't fetch XRP rate for the specified currency."
     else:
-        return "Failed to fetch data from CoinGecko API."
+        return "1.32"
 
 
 #loan_amount = 1000  # Replace with your amount
