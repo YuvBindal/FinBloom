@@ -20,14 +20,14 @@ export default function LoanRequestPage() {
   const [loanEducation, setLoanEducation] = useState("");
   const [loanEmployment, setLoanEmployment] = useState("");
   const [loanAnnualIncome, setLoanAnnualIncome] = useState("");
-  const [loanAmount, setLoanAmount] = useState("5000");
+  const [loanAmount, setLoanAmount] = useState("");
   const [loanYears, setLoanYears] = useState("");
   const [cibilScore, setCibilScore] = useState("");
   const [cAssetValues, setCAssetValues] = useState("");
   const [rAssetValues, setRAssetValues] = useState("");
   const [lAssetValues, setLAssetValues] = useState("");
   const [bAssetValues, setBAssetValuess] = useState("");
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const [loanRequest, setLoanRequest] = useState({});
   const [userEligibility, setUserEligiblity] = useState(false);
   const [llmResponse, setLLMResponse] = useState(
@@ -106,7 +106,7 @@ export default function LoanRequestPage() {
       console.log(user.email);
 
       setLoanRequest({
-        loan_id: loanId,
+        loan_id:Math.floor(Math.random()*1000).toString(),
         no_of_dependents: loanDependents,
         education: loanEducation,
         self_employed: loanEmployment,
