@@ -14,6 +14,8 @@ import { UserAuth } from "../utils/auth-helper";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getLedgerIndex } from "xrpl/dist/npm/sugar";
 
+const backendURL = "https://bloomfinbackend.onrender.com";
+
 export default function LoanRequestPage() {
   const [user, setUser] = useState(null);
   const [loanDependents, setLoanDependents] = useState("");
@@ -92,8 +94,7 @@ export default function LoanRequestPage() {
       const loanId = `loan${Math.random().toString(16).slice(2)}`;
       const currentDate = new Date();
 
-
-      const combinedId = loanId+"-"+userEmail+"-"+currentDate;
+      const combinedId = loanId + "-" + userEmail + "-" + currentDate;
       const loanData = {
         loanId: loanId,
         isEligible: true,
@@ -106,7 +107,7 @@ export default function LoanRequestPage() {
       console.log(user.email);
 
       setLoanRequest({
-        loan_id:Math.floor(Math.random()*1000).toString(),
+        loan_id: Math.floor(Math.random() * 1000).toString(),
         no_of_dependents: loanDependents,
         education: loanEducation,
         self_employed: loanEmployment,
@@ -127,7 +128,10 @@ export default function LoanRequestPage() {
         })
       );
 
-      await setDoc(doc(db, "loan_requests", combinedId), loanRequestWithDefaults);
+      await setDoc(
+        doc(db, "loan_requests", combinedId),
+        loanRequestWithDefaults
+      );
       setShowForm(true);
       //await addDoc(collection(db, "users", user.uid, "loans"), loanData);
     } catch (error) {
@@ -140,7 +144,7 @@ export default function LoanRequestPage() {
     try {
       //1. run the ml model for eligib
       // Make a POST request to the /eligible endpoint
-      const response = await fetch("http://127.0.0.1:8000/eligible", {
+      const response = await fetch(backendURL + "/eligible", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -163,10 +167,9 @@ export default function LoanRequestPage() {
     }
   };
 
- 
   //Migrated xrpl-py code to xrpl-js onto the frontend as FastAPI is incompatible with xrpl-py due to asynchronous errors.
   async function generate_wallets_and_transaction() {
-    setLoader(true)
+    setLoader(true);
     if (!showFundsConfirmation) {
       const xrpl = require("xrpl"); // Dependency xrpl required
       const api = new xrpl.Client("wss://s.altnet.rippletest.net:51233"); // Testnet connection
@@ -175,7 +178,7 @@ export default function LoanRequestPage() {
         await api.connect();
 
         // Calculate the amount that needs to be sent first
-        const LoanAmountInDrops = Math.floor((+loanAmount) * xrpRate * 1_000_000);
+        const LoanAmountInDrops = Math.floor(+loanAmount * xrpRate * 1_000_000);
 
         // Wallet generation
         const userWalletObj = await api.fundWallet();
@@ -197,7 +200,6 @@ export default function LoanRequestPage() {
 
         console.log(preparedTransaction);
 
-        
         // Sign the transaction
         const signedTransaction = userWallet.sign(preparedTransaction);
         console.log(signedTransaction);
@@ -205,28 +207,23 @@ export default function LoanRequestPage() {
         // Submit the transaction
         const results = await api.submitAndWait(signedTransaction.tx_blob);
         console.log(results);
-        setWalletBalance(LoanAmountInDrops)
+        setWalletBalance(LoanAmountInDrops);
         setFundsConfirmation(true);
-
-  
       } catch (error) {
-
         console.error("Error:", error);
       } finally {
         setLoader(false);
       }
     } else {
-      console.log('your transaction has already been sent!')
+      console.log("your transaction has already been sent!");
       setLoader(false);
     }
   }
 
-
-
   const handleWallets = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/wallets", {
+      const response = await fetch(backendURL + "/wallets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -265,7 +262,7 @@ export default function LoanRequestPage() {
         bank_asset_value: bAssetValues,
       };
 
-      const response = await fetch("http://127.0.0.1:8000/llm_prediction", {
+      const response = await fetch(backendURL + "/llm_prediction", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -288,7 +285,7 @@ export default function LoanRequestPage() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/xrp_rate", {
+      const response = await fetch(backendURL + "/xrp_rate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -573,7 +570,9 @@ export default function LoanRequestPage() {
 
                     <button
                       type="button"
-                      className={`w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-150 ease-in-out ${loader ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      className={`w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-150 ease-in-out ${
+                        loader ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                       onClick={generate_wallets_and_transaction}
                       disabled={loader}
                     >
