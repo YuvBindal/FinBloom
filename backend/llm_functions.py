@@ -3,6 +3,15 @@ import pandas as pd
 
 import google.generativeai as genai
 
+import os
+from dotenv import load_dotenv
+
+# load up the .env file
+load_dotenv()
+
+# get the API key
+API_KEY = os.getenv('APIKEY')
+
 # this should be how the parameter into the function looks like
 new_data = pd.DataFrame(
     {
@@ -44,7 +53,7 @@ def loan_prediction_and_repayment_generation(loan_data):
     and make ideal assumptions if you need more data. Lastly, your response should be 
     in a JSON format such as this: {sample_response}. Note that the numbers are just 
     samples for your understanding."""
-    genai.configure(api_key="AIzaSyAgkgpR5zPSUvtJ93J1sV5NCNhEXUfQVv0")
+    genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel("gemini-pro")
     response = model.generate_content(prompt)
     return response.text
