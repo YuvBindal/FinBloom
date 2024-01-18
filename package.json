@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "next": "^14.0.4",
     "xrpl": "^2.14.0",
     "xrpl-js": "^1.0.2"
   }
