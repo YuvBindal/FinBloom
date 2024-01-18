@@ -47,14 +47,14 @@ export default function LoanRequestHistoryPage() {
       <h1>Loan Request History</h1>
       {
         // Display the timestamp and the loan request amount which is stored in the loanRequests array
-        loanRequests.map((loanRequest) => (
-          <div key={loanRequest.timestamp}>
-            <pre>
-              {loanRequest.timestamp} - {loanRequest["loan_amount"]}
-              <br />
-            </pre>
-          </div>
-        ))
+        // loanRequests.map((loanRequest) => (
+        //   <div key={loanRequest.timestamp}>
+        //     <pre>
+        //       {loanRequest.timestamp} - {loanRequest["loan_amount"]}
+        //       <br />
+        //     </pre>
+        //   </div>
+        // ))
         // loanRequests.map((loanRequest) => (
         //   <div>
         //     <pre key={loanRequest.timestamp}>
@@ -63,6 +63,14 @@ export default function LoanRequestHistoryPage() {
         //     </pre>
         //   </div>
         // ))
+        loanRequests.map((loanRequest) => (
+          <div key={loanRequest.timestamp}>
+            <pre>
+              {loanRequest.timestamp} - {loanRequest["loan_amount"]}
+              <br />
+            </pre>
+          </div>
+        ))
       }
       {loanRequests.length === 0 && <p>No loan requests found</p>}
     </div>
