@@ -9,63 +9,38 @@ export default function LoanRequestHistoryPage() {
   const [loanRequests, setLoanRequests] = useState([]);
   const [keyIncrement, setKeyIncrement] = useState(0);
 
-  // useEffect(() => {
-  //   auth.onAuthStateChanged(async function (user) {
-  //     if (user) {
-  //       // User is signed in.
-  //       var email = user.email;
-  //       console.log(email);
-  //       // Call the function to fetch loan requests
-  //       const response = await fetchLoanRequests(email);
-  //     } else {
-  //       // No user is signed in.
-  //       console.log("Sign in to see history");
-  //     }
-  //   });
-  // }, [fetchLoanRequests]);
-
-  // async function fetchLoanRequests(email) {
-  //   const querySnapshot = await getDocs(collection(db, "loan_requests"));
-  //   setLoanRequests([]);
-  //   querySnapshot.forEach((doc) => {
-  //     const key = doc.id;
-  //     const keyParts = key.split("-");
-  //     if (keyParts[1] === email) {
-  //       const timestamp = keyParts[2];
-  //       // Create a new object with the timestamp and the loan request data
-  //       const loanRequest = { timestamp: timestamp, ...doc.data() };
-  //       console.log(loanRequest);
-  //       // Add the loan request to the list
-  //       setLoanRequests((loanRequests) => [...loanRequests, loanRequest]);
-  //     }
-  //   });
-  //   // console.log(loanRequests);
-  // }
-
-  const fetchLoanRequests = useCallback(async (email) => {
-    const querySnapshot = await getDocs(collection(db, "loan_requests"));
-    setLoanRequests([]);
-    querySnapshot.forEach((doc) => {
-      const key = doc.id;
-      const keyParts = key.split("-");
-      if (keyParts[1] === email) {
-        const timestamp = keyParts[2];
-        const loanRequest = { timestamp: timestamp, ...doc.data() };
-        setLoanRequests((loanRequests) => [...loanRequests, loanRequest]);
-      }
-    });
-  }, []); // Add dependencies if any
-
   useEffect(() => {
+    async function fetchLoanRequests(email) {
+      const querySnapshot = await getDocs(collection(db, "loan_requests"));
+      setLoanRequests([]);
+      querySnapshot.forEach((doc) => {
+        const key = doc.id;
+        const keyParts = key.split("-");
+        if (keyParts[1] === email) {
+          const timestamp = keyParts[2];
+          // Create a new object with the timestamp and the loan request data
+          const loanRequest = { timestamp: timestamp, ...doc.data() };
+          console.log(loanRequest);
+          // Add the loan request to the list
+          setLoanRequests((loanRequests) => [...loanRequests, loanRequest]);
+        }
+      });
+      // console.log(loanRequests);
+    }
+
     auth.onAuthStateChanged(async function (user) {
       if (user) {
+        // User is signed in.
         var email = user.email;
+        console.log(email);
+        // Call the function to fetch loan requests
         const response = await fetchLoanRequests(email);
       } else {
+        // No user is signed in.
         console.log("Sign in to see history");
       }
     });
-  }, [fetchLoanRequests]);
+  }, []);
 
   return (
     <div>
