@@ -1,13 +1,13 @@
 # Dummy FILE DONT CHANGE ANYTHING HERE
 # CAN DELETE THIS FILE AFTER TESTING
 
-from xrpl.account import get_balance
-from xrpl.clients import JsonRpcClient
-from xrpl.models import Payment, SetRegularKey
-from xrpl.transaction import submit_and_wait
-from xrpl.wallet import generate_faucet_wallet
-from pprint import pprint
-from xrpl.models.transactions import Payment, Memo
+# from xrpl.account import get_balance
+# from xrpl.clients import JsonRpcClient
+# from xrpl.models import Payment, SetRegularKey
+# from xrpl.transaction import submit_and_wait
+# from xrpl.wallet import generate_faucet_wallet
+# from pprint import pprint
+# from xrpl.models.transactions import Payment, Memo
 import json  # To convert the repayment schedule dictionary to a string
 import requests
 import asyncio
@@ -15,8 +15,8 @@ import threading
 
 #print("running")
 
-JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
-client = JsonRpcClient(JSON_RPC_URL)
+# JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
+# client = JsonRpcClient(JSON_RPC_URL)
 #wallet1 = generate_faucet_wallet(client, debug=True)
 #wallet2 = generate_faucet_wallet(client, debug=True)
 # Define your repayment schedule dictionary
@@ -35,91 +35,91 @@ client = JsonRpcClient(JSON_RPC_URL)
 
 
 
-def run_asyncio_loop(loop):
-    asyncio.set_event_loop(loop)
-    loop.run_forever()
+# def run_asyncio_loop(loop):
+#     asyncio.set_event_loop(loop)
+#     loop.run_forever()
 
-def run_async_function(func, *args):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    task = loop.create_task(func(*args))
-    loop.run_until_complete(task)
-    loop.close()
+# def run_async_function(func, *args):
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     task = loop.create_task(func(*args))
+#     loop.run_until_complete(task)
+#     loop.close()
 
-async def generate_transaction_wallets_wrapper():
-    # Wrapper function to run the wallet generation in a separate thread
-    loop = asyncio.new_event_loop()
-    threading.Thread(target=run_async_function, args=(generate_transaction_wallets,)).start()
+# async def generate_transaction_wallets_wrapper():
+#     # Wrapper function to run the wallet generation in a separate thread
+#     loop = asyncio.new_event_loop()
+#     threading.Thread(target=run_async_function, args=(generate_transaction_wallets,)).start()
 
 
-async def generate_faucet_wallet_async(client, debug=False):
-    return await generate_faucet_wallet(client, debug=debug)
+# async def generate_faucet_wallet_async(client, debug=False):
+#     return await generate_faucet_wallet(client, debug=debug)
 
-async def generate_transaction_wallets():
-    # Your asynchronous logic here...
-    user_wallet = await generate_faucet_wallet_async(client, debug=True)
-    destination_wallet = await generate_faucet_wallet_async(client, debug=True)
+# async def generate_transaction_wallets():
+#     # Your asynchronous logic here...
+#     user_wallet = await generate_faucet_wallet_async(client, debug=True)
+#     destination_wallet = await generate_faucet_wallet_async(client, debug=True)
     
-    await asyncio.sleep(5)
-    return user_wallet
+#     await asyncio.sleep(5)
+#     return user_wallet
 
-def generate_loan_transaction(client, wallet1, wallet2, repayment_schedule, loan_amount, currency):
+# def generate_loan_transaction(client, wallet1, wallet2, repayment_schedule, loan_amount, currency):
 
-    transaction_amt_in_xrp = convert_to_xrp(loan_amount, currency)
-    transaction_amount_in_drops = int(transaction_amt_in_xrp*1000000)
+#     transaction_amt_in_xrp = convert_to_xrp(loan_amount, currency)
+#     transaction_amount_in_drops = int(transaction_amt_in_xrp*1000000)
 
-    regular_key_wallet = generate_faucet_wallet(client, debug=True)
+#     regular_key_wallet = generate_faucet_wallet(client, debug=True)
 
-    print("Balances before payment:")
-    print(get_balance(wallet1.classic_address, client))
-    print(get_balance(wallet2.classic_address, client))
+#     print("Balances before payment:")
+#     print(get_balance(wallet1.classic_address, client))
+#     print(get_balance(wallet2.classic_address, client))
 
-    tx = SetRegularKey(account=wallet1.address,
-                       regular_key=regular_key_wallet.address)
+#     tx = SetRegularKey(account=wallet1.address,
+#                        regular_key=regular_key_wallet.address)
 
-    set_regular_key_response = submit_and_wait(tx, client, wallet1)
+#     set_regular_key_response = submit_and_wait(tx, client, wallet1)
 
-    print("Response for successful SetRegularKey tx:")
-    print(set_regular_key_response)
+#     print("Response for successful SetRegularKey tx:")
+#     print(set_regular_key_response)
 
-    # Convert the repayment schedule dictionary to a string
-    repayment_schedule_str = json.dumps(repayment_schedule)
-    repayment_schedule_bytes = repayment_schedule_str.encode("utf-8")
-    repayment_schedule_hex = repayment_schedule_bytes.hex()
+#     # Convert the repayment schedule dictionary to a string
+#     repayment_schedule_str = json.dumps(repayment_schedule)
+#     repayment_schedule_bytes = repayment_schedule_str.encode("utf-8")
+#     repayment_schedule_hex = repayment_schedule_bytes.hex()
 
-    # Create a Memo object to embed the repayment schedule
-    memo = Memo(memo_data=repayment_schedule_hex)
+#     # Create a Memo object to embed the repayment schedule
+#     memo = Memo(memo_data=repayment_schedule_hex)
 
-    # Create the Payment transaction with the Memo
-    payment = Payment(
-        account=wallet1.address,
-        destination=wallet2.address,
-        amount=str(transaction_amount_in_drops),
-        memos=[memo]  # Include the memo in the Payment transaction
-    )
+#     # Create the Payment transaction with the Memo
+#     payment = Payment(
+#         account=wallet1.address,
+#         destination=wallet2.address,
+#         amount=str(transaction_amount_in_drops),
+#         memos=[memo]  # Include the memo in the Payment transaction
+#     )
 
-    # Now, submit the transaction as you were doing previously
-    payment_response = submit_and_wait(payment, client, regular_key_wallet)
+#     # Now, submit the transaction as you were doing previously
+#     payment_response = submit_and_wait(payment, client, regular_key_wallet)
 
-    print("Response for tx signed using Regular Key:")
-    pprint(payment_response)
-    print(type(payment_response))
+#     print("Response for tx signed using Regular Key:")
+#     pprint(payment_response)
+#     print(type(payment_response))
 
-    # Balance after sending 1000 from wallet1 to wallet2
-    print("Balances after payment:")
-    print(get_balance(wallet1.address, client))
-    print(get_balance(wallet2.address, client))
+#     # Balance after sending 1000 from wallet1 to wallet2
+#     print("Balances after payment:")
+#     print(get_balance(wallet1.address, client))
+#     print(get_balance(wallet2.address, client))
 
-    hex_data = payment_response.result['Memos'][0]['Memo']['MemoData']
+#     hex_data = payment_response.result['Memos'][0]['Memo']['MemoData']
 
-    # Convert the hexadecimal string to bytes
-    data_bytes = bytes.fromhex(hex_data)
+#     # Convert the hexadecimal string to bytes
+#     data_bytes = bytes.fromhex(hex_data)
 
-    # Decode the bytes back to a string
-    decoded_string = data_bytes.decode("utf-8")
+#     # Decode the bytes back to a string
+#     decoded_string = data_bytes.decode("utf-8")
 
-    print(decoded_string)  # Decoded repayment_schemes
-    # Transaction ID
+#     print(decoded_string)  # Decoded repayment_schemes
+#     # Transaction ID
 
 
 def convert_to_xrp(amount, currency):

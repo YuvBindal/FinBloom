@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from typing import Optional
-from loan_issuance import generate_loan_transaction, convert_to_xrp
+# from loan_issuance import generate_loan_transaction, convert_to_xrp
 
 
 app = FastAPI()
@@ -15,7 +15,7 @@ async def generate_loan(
     currency: str,
 ):
     try:
-        generate_loan_transaction(client, starting_wallet, destination_wallet, repayment_schedule, loan_amount, currency)
-        return {"message": "Loan transaction generated successfully!"}
+        # generate_loan_transaction(client, starting_wallet, destination_wallet, repayment_schedule, loan_amount, currency)
+        return {"message": "Test Execution!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

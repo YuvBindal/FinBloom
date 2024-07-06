@@ -1,14 +1,14 @@
+# routes.py
 from fastapi import APIRouter
 from requests import request
 from pydantic import BaseModel
 import asyncio
 
 # import the modules containing the functions you need
-from loans import sendPayment, repayLoan
-from eligibility import eligible
-from llm_functions import loan_prediction_and_repayment_generation
-from loan_issuance import convert_to_xrp, generate_loan_transaction, generate_transaction_wallets, generate_transaction_wallets_wrapper
-
+# from backend.loans import sendPayment, repayLoan
+from backend.eligibility import eligible
+from backend.llm_functions import loan_prediction_and_repayment_generation
+from backend.loan_issuance import convert_to_xrp
 
 class LoanData(BaseModel):
     # Define the structure of your data here
@@ -40,30 +40,25 @@ class UserProfile(BaseModel):
     luxury_assets_value: str
     bank_asset_value: str
 
-
 router = APIRouter()
-
 
 @router.get("/hello")
 async def hello():
     return {"message": "yep, it's working"}
 
+# @router.post("/send-payment")
+# async def send_payment():
+#     # Call the function from the loans module
+#     return await sendPayment()
 
-@router.post("/send-payment")
-async def send_payment():
-    # Call the function from the loans module
-    return await sendPayment()
-
-
-@router.post("/repayment")
-async def repay_loan():
-    # Call the function from the loans module
-    return await repayLoan()
+# @router.post("/repayment")
+# async def repay_loan():
+#     # Call the function from the loans module
+#     return await repayLoan()
 
 @router.post("/llm_prediction")
 async def repay_loan(data: UserProfile):
     # LLM model prediciting user loan amount and repayment schedule based on their profile
-    print("reached here !!!!!!!!!!!!!!!!!!!!!")
     data_dict = data.dict()
     llm_response = loan_prediction_and_repayment_generation(data_dict)
 
@@ -72,24 +67,20 @@ async def repay_loan(data: UserProfile):
 @router.post("/xrp_rate")
 async def xrp_rate():
     # LLM model prediciting user loan amount and repayment schedule based on their profile
-    print("reached here !!!!!!!!!!!!!!!!!!!!!")
     exchange_rate = convert_to_xrp(1, "SGD")
 
     return exchange_rate
 
-@router.post("/wallets")
-async def wallets():
-    print("reached here !!!!!!!!!!!!!!!!!!!!!")
-    wallet = await generate_transaction_wallets()
-    print(wallet)
+# @router.post("/wallets")
+# async def wallets():
+#     wallet = await generate_transaction_wallets()
+#     print(wallet)
 
-    return wallet
+#     return wallet
 
 @router.post("/eligible")
 async def process_model_output(data: LoanData):
     # Convert the data to a dictionary
-
-    print("reached here !!!!!!!!!!!!!!!!!!!!!")
     data_dict = data.dict()
 
     # Call the function from the eligibility module

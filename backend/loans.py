@@ -1,64 +1,64 @@
-from fastapi import APIRouter, Body, Depends
-from pydantic import BaseModel
-from datetime import datetime
-import xrpl
-# llm file
-import llm_functions
-from eligibility import eligible
+# from fastapi import APIRouter, Body, Depends
+# from pydantic import BaseModel
+# from datetime import datetime
+# import xrpl
+# # llm file
+# import llm_functions
+# from eligibility import eligible
 
-router = APIRouter()
+# router = APIRouter()
 
-# Models for endpoint request data
-# SendCryptoRequest and ReceiveCryptoRequest are the similar
-
-
-class SendCryptoRequest(BaseModel):
-    transaction_id: str
-    amount: float
-    currency: str
-    deadline: datetime
+# # Models for endpoint request data
+# # SendCryptoRequest and ReceiveCryptoRequest are the similar
 
 
-class ReceiveCryptoRequest(BaseModel):
-    transaction_id: str
-    amount: float
-    currency: str
-    deadline: datetime
+# class SendCryptoRequest(BaseModel):
+#     transaction_id: str
+#     amount: float
+#     currency: str
+#     deadline: datetime
 
 
-async def sendPayment(request: SendCryptoRequest = Body(...), is_eligible: bool = Depends(eligible)):
-    # This is the endpoint for sending crypto with a deadline
-    if is_eligible:
-        try:
-            # Interaction with the XRPL to send the money
-            await xrpl.send_crypto_with_deadline(
-                request.transaction_id,
-                request.amount,
-                request.currency,
-                request.deadline
-            )
-            return {"message": "Transaction successful"}
-        except Exception as e:
-            return {"error": str(e)}
-    else:
-        return {"error": "You are not eligible for a loan"}
+# class ReceiveCryptoRequest(BaseModel):
+#     transaction_id: str
+#     amount: float
+#     currency: str
+#     deadline: datetime
 
 
-async def repayLoan(request: ReceiveCryptoRequest = Body(...)):
-    # Endpoint for receiving crypto by a deadline with expected amount and penalty
-    # Feel free to modify the logic below, I've coded it assuming we need a penalty
-    current_time = datetime.now()
-    if request.deadline < current_time:
-        # Deadline has passed, add penalty
-        expected_amount = await llm_functions.calculate_expected_amount(request.transaction_id)
-        penalty_amount = llm_functions.calculate_penalty(
-            expected_amount, request.deadline)
-        amount_with_penalty = expected_amount + penalty_amount
-        return {"message": f"Deadline missed. Amount with penalty: {amount_with_penalty}"}
-    else:
-        # Deadline not yet reached
-        expected_amount = await llm_functions.calculate_expected_amount(request.transaction_id)
-        return {"message": f"Expected amount: {expected_amount}"}
+# async def sendPayment(request: SendCryptoRequest = Body(...), is_eligible: bool = Depends(eligible)):
+#     # This is the endpoint for sending crypto with a deadline
+#     if is_eligible:
+#         try:
+#             # Interaction with the XRPL to send the money
+#             await xrpl.send_crypto_with_deadline(
+#                 request.transaction_id,
+#                 request.amount,
+#                 request.currency,
+#                 request.deadline
+#             )
+#             return {"message": "Transaction successful"}
+#         except Exception as e:
+#             return {"error": str(e)}
+#     else:
+#         return {"error": "You are not eligible for a loan"}
+
+
+# async def repayLoan(request: ReceiveCryptoRequest = Body(...)):
+#     # Endpoint for receiving crypto by a deadline with expected amount and penalty
+#     # Feel free to modify the logic below, I've coded it assuming we need a penalty
+#     current_time = datetime.now()
+#     if request.deadline < current_time:
+#         # Deadline has passed, add penalty
+#         expected_amount = await llm_functions.calculate_expected_amount(request.transaction_id)
+#         penalty_amount = llm_functions.calculate_penalty(
+#             expected_amount, request.deadline)
+#         amount_with_penalty = expected_amount + penalty_amount
+#         return {"message": f"Deadline missed. Amount with penalty: {amount_with_penalty}"}
+#     else:
+#         # Deadline not yet reached
+#         expected_amount = await llm_functions.calculate_expected_amount(request.transaction_id)
+#         return {"message": f"Expected amount: {expected_amount}"}
 
 
 # class TransactionRequest(BaseModel):
