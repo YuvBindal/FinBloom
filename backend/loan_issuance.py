@@ -137,6 +137,23 @@ def convert_to_xrp(amount, currency):
             return "Couldn't fetch XRP rate for the specified currency."
     else:
         return "1.32"
+    
+def convert_to_eth(amount, currency):
+    # Fetching data from CoinGecko API for Ethereum
+    url = f'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies={currency.lower()}'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        if 'ethereum' in data and currency.lower() in data['ethereum']:
+            eth_rate = data['ethereum'][currency.lower()]
+            eth_amount = amount / eth_rate
+            return eth_amount
+        else:
+            return "4006.75"
+    else:
+        return "4006.75"
+
 
 
 #loan_amount = 1000  # Replace with your amount

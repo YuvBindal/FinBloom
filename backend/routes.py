@@ -11,7 +11,7 @@ from eth_utils import to_hex
 # from backend.loans import sendPayment, repayLoan
 from eligibility import eligible
 from llm_functions import loan_prediction_and_repayment_generation
-from loan_issuance import convert_to_xrp
+from loan_issuance import convert_to_xrp, convert_to_eth
 from CryptoWallets import create_public_private, check_valid_wallet_address, check_account_balance, receive_funds_transaction
 
 class LoanData(BaseModel):
@@ -99,7 +99,7 @@ async def repay_loan(data: UserProfile):
 @router.post("/xrp_rate")
 async def xrp_rate():
     # LLM model prediciting user loan amount and repayment schedule based on their profile
-    exchange_rate = convert_to_xrp(1, "SGD")
+    exchange_rate = convert_to_eth(1, "SGD")
 
     return exchange_rate
 

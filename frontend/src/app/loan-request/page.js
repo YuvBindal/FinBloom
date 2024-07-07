@@ -529,7 +529,7 @@ export default function LoanRequestPage() {
                             {llmResponseSuccess && (
                               <p>
                                 The current exchange rate for 1 SGD ={" "}
-                                {JSON.stringify(xrpRate, null, 2)} XRP
+                                {JSON.stringify(xrpRate, null, 2)} ETH
                               </p>
                             )}
 
@@ -553,12 +553,9 @@ export default function LoanRequestPage() {
                               <div className="mt-4">
                                 <p>
                                   Congratulations on the loan! Your funds have been
-                                  successfully transferred.
+                                  successfully transferred. Please check your loan history for details!
                                 </p>
-                                <p>
-                                  Your wallet balance is XRP:{" "}
-                                  {JSON.stringify(walletBalance / 1_000_000, null, 2)}
-                                </p>
+                              
                               </div>
                             )}
                           </div>
