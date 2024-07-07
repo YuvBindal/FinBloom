@@ -47,9 +47,9 @@ const Navbar = () => {
             </defs>
           </svg>
         </div>
-        <a href="/">
+        <Link href="/">
           <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Finspire</h2>
-        </a>
+        </Link>
       </div>
       <div className="flex flex-1 justify-end gap-8">
         <div className="flex items-center gap-9">
@@ -62,6 +62,11 @@ const Navbar = () => {
           <Link href="/repayment-schedule" className="text-white text-sm font-medium leading-normal">
             Repayment Schedule
           </Link>
+          {user && (
+            <Link href="/profile" className="text-white text-sm font-medium leading-normal">
+              My Profile
+            </Link>
+          )}
         </div>
         <div className="flex gap-2">
           {loading ? null : !user ? (
@@ -80,9 +85,8 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <div className="flex items-center">
-              <p className="text-white">Welcome, {user.displayName}</p>
-              <p className="cursor-pointer ml-4 text-white" onClick={handleSignOut}>
+            <div className="flex items-center gap-4">
+              <p className="cursor-pointer text-white" onClick={handleSignOut}>
                 Sign out
               </p>
             </div>
