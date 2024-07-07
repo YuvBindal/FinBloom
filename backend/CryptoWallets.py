@@ -1,10 +1,14 @@
 from web3 import Web3
 from eth_account import Account
 from pydantic import BaseModel
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+INFURA_API_KEY = os.getenv('INFURA_API_KEY')
 
 #Using the Sepolia testnet
-infura_url = 'https://sepolia.infura.io/v3/d4f0828ae46042b888017b3312af4e1f'
+infura_url = f'https://sepolia.infura.io/v3/{INFURA_API_KEY}'
 web3 = Web3(Web3.HTTPProvider(infura_url))
 # Check if connection is successful
 if web3.is_connected():
