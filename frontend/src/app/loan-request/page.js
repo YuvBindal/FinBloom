@@ -11,8 +11,8 @@ import {
 import { auth, db } from "../firebase-config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-const backendURL = "https://bloomfinbackend.onrender.com";
-// const backendURL = "http://127.0.0.1:8000";
+// const backendURL = "https://bloomfinbackend.onrender.com";
+const backendURL = "http://127.0.0.1:8000";
 
 export default function LoanRequestPage() {
   const [user, setUser] = useState(null);
