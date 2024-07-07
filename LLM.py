@@ -3,6 +3,7 @@ import pandas as pd
 
 import google.generativeai as genai
 
+import dotenv
 import os
 
 # this should be how the parameter into the function looks like
@@ -32,6 +33,7 @@ sample_response = {
     }
 }
 
+dotenv.load_dotenv()
 API_KEY = os.getenv('GEMINI_API_KEY')
 
 
