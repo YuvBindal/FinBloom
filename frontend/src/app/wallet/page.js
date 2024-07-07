@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 
-const backendURL = "http://localhost:8000";
+const backendURL = "http://0.0.0.0:8000";
 
 export default function WalletPage() {
   const [user, setUser] = useState(null);
@@ -16,8 +16,10 @@ export default function WalletPage() {
   const [accountBalance, setAccountBalance] = useState(0);
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState("");
-  const [amountToSend, setAmountToSend] = useState("");
+  const [amountToSend, setAmountToSend] = useState(0);
   const [gasLimit, setGasLimit] = useState(21000);
+  const [latestTransaction, setLatestTransaction] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -82,13 +84,20 @@ export default function WalletPage() {
       return;
     }
 
+    if (amountToSend <= 0) {
+        alert("Invalid amount to send");
+        return;
+    }
+
     const transactionData = {
-      from: walletAddress,
-      to: recipientAddress,
-      value: amountToSend,
-      gas: gasLimit,
-      privateKey: privateKey
+      from_account: walletAddress,
+      to_account: recipientAddress,
+      amount: parseFloat(amountToSend),
+      gas_limit: parseInt(gasLimit, 10),
+      from_account_private_key: privateKey
     };
+
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${backendURL}/send-transaction`, {
@@ -104,15 +113,28 @@ export default function WalletPage() {
       }
 
       const result = await response.json();
-      if (result.success) {
+      if (result.transaction_receipt) {
         alert("Transaction successful");
+        getAccountBalance(walletAddress);
+        setLatestTransaction(result.transaction_receipt);
       } else {
-        alert("Transaction failed: " + result.message);
+        alert("Transaction failed: " + result.transaction_receipt);
       }
     } catch (error) {
       console.error('Error sending transaction:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const LoadingSpinner = () => (
+     
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="spinner"></div>
+        <div className="text-white ml-4">Processing your transaction...</div>
+    </div>
+      
+  );
 
   return (
     <div className="relative flex min-h-screen flex-col bg-[#111a22] overflow-x-hidden" style={{ fontFamily: '"Public Sans", "Noto Sans", sans-serif' }}>
@@ -167,6 +189,7 @@ export default function WalletPage() {
                       >
                         Send Transaction
                       </button>
+                      {isLoading && <LoadingSpinner />}
                     </div>
                   )}
                 </div>
@@ -176,6 +199,22 @@ export default function WalletPage() {
                 </div>
               )}
             </div>
+
+            {latestTransaction && (
+              <div className="mt-8 w-full flex flex-col items-center">
+                <h3 className="text-white text-lg font-bold leading-tight">Latest Successful Transaction</h3>
+                <div className="bg-gray-800 p-4 rounded-md w-full max-w-md mt-4">
+                  <p className="text-white text-sm"><strong>Block Hash:</strong> {latestTransaction.blockHash}</p>
+                  <p className="text-white text-sm"><strong>Block Number:</strong> {latestTransaction.blockNumber}</p>
+                  <p className="text-white text-sm"><strong>From:</strong> {latestTransaction.from}</p>
+                  <p className="text-white text-sm"><strong>To:</strong> {latestTransaction.to}</p>
+                  <p className="text-white text-sm"><strong>Transaction Hash:</strong> {latestTransaction.transactionHash}</p>
+                  <p className="text-white text-sm"><strong>Gas Used:</strong> {latestTransaction.gasUsed}</p>
+                  <p className="text-white text-sm"><strong>Effective Gas Price:</strong> {latestTransaction.effectiveGasPrice}</p>
+                  <p className="text-white text-sm"><strong>Status:</strong> {latestTransaction.status}</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

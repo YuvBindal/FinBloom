@@ -4,14 +4,15 @@ from requests import request
 from pydantic import BaseModel
 import asyncio
 from fastapi import FastAPI, Query
-
+from web3 import Web3
+from eth_utils import to_hex
 
 # import the modules containing the functions you need
 # from backend.loans import sendPayment, repayLoan
 from backend.eligibility import eligible
 from backend.llm_functions import loan_prediction_and_repayment_generation
 from backend.loan_issuance import convert_to_xrp
-from backend.CryptoWallets import create_public_private, check_valid_wallet_address, check_account_balance
+from backend.CryptoWallets import create_public_private, check_valid_wallet_address, check_account_balance, receive_funds_transaction
 
 class LoanData(BaseModel):
     # Define the structure of your data here
@@ -42,6 +43,33 @@ class UserProfile(BaseModel):
     commercial_assets_value: str
     luxury_assets_value: str
     bank_asset_value: str
+
+class TransactionData(BaseModel):
+    from_account: str
+    to_account: str
+    amount: float
+    gas_limit: int
+    from_account_private_key: str
+
+def serialize_receipt(receipt):
+    """Convert the receipt object to a JSON serializable format."""
+    return {
+        "blockHash": to_hex(receipt.blockHash),
+        "blockNumber": receipt.blockNumber,
+        "contractAddress": receipt.contractAddress,
+        "cumulativeGasUsed": receipt.cumulativeGasUsed,
+        "effectiveGasPrice": receipt.effectiveGasPrice,
+        "from": receipt["from"],
+        "gasUsed": receipt.gasUsed,
+        "logs": receipt.logs,
+        "logsBloom": to_hex(receipt.logsBloom),
+        "status": receipt.status,
+        "to": receipt["to"],
+        "transactionHash": to_hex(receipt.transactionHash),
+        "transactionIndex": receipt.transactionIndex,
+        "type": receipt["type"],
+    }
+
 
 router = APIRouter()
 
@@ -110,3 +138,11 @@ async def get_account_balance(address: str = Query(...)):
         return {"address_balance": balance}
     else:
         return {"address_balance": "Invalid wallet address"}
+
+@router.post('/send-transaction')
+async def send_transaction(transactionData: TransactionData):
+    txn_reciept = receive_funds_transaction(transactionData)
+    if txn_reciept != -1:
+        return {"transaction_receipt": serialize_receipt(txn_reciept)}
+    return {"transaction_receipt": "Transaction failed. Please check the transaction details and try again."}
+
