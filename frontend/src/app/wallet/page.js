@@ -128,10 +128,11 @@ export default function WalletPage() {
         }
 
         previous_transactions.push(result.transaction_receipt);
-
+        
         await updateDoc(userDocRef, {
           transactions: previous_transactions
         });
+        fetchTransactions(user.uid);
       } else {
         alert("Transaction failed: " + result.transaction_receipt);
       }
