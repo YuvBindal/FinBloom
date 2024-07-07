@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 
-const backendURL = "http://0.0.0.0:8000";
+const backendURL = "https://bloomfinbackend.onrender.com";
 
 export default function WalletPage() {
   const [user, setUser] = useState(null);
