@@ -9,10 +9,10 @@ from eth_utils import to_hex
 
 # import the modules containing the functions you need
 # from backend.loans import sendPayment, repayLoan
-from backend.eligibility import eligible
-from backend.llm_functions import loan_prediction_and_repayment_generation
-from backend.loan_issuance import convert_to_xrp
-from backend.CryptoWallets import create_public_private, check_valid_wallet_address, check_account_balance, receive_funds_transaction
+from eligibility import eligible
+from llm_functions import loan_prediction_and_repayment_generation
+from loan_issuance import convert_to_xrp
+from CryptoWallets import create_public_private, check_valid_wallet_address, check_account_balance, receive_funds_transaction
 
 class LoanData(BaseModel):
     # Define the structure of your data here
