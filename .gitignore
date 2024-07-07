@@ -7,6 +7,10 @@ yarn-error.log*
 firebase-debug.log*
 firebase-debug.*.log*
 
+# Add all pycache to .gitignore
+__pycache__/
+*/__pycache__/
+
 # Firebase cache
 .firebase/
 
