@@ -3,13 +3,15 @@ from fastapi import APIRouter
 from requests import request
 from pydantic import BaseModel
 import asyncio
+from fastapi import FastAPI, Query
+
 
 # import the modules containing the functions you need
 # from backend.loans import sendPayment, repayLoan
 from backend.eligibility import eligible
 from backend.llm_functions import loan_prediction_and_repayment_generation
 from backend.loan_issuance import convert_to_xrp
-from backend.CryptoWallets import create_public_private, check_valid_wallet_address
+from backend.CryptoWallets import create_public_private, check_valid_wallet_address, check_account_balance
 
 class LoanData(BaseModel):
     # Define the structure of your data here
@@ -101,3 +103,10 @@ async def setup_wallet(check_wallet_address_exists = None):
         return check_valid_wallet_address(check_wallet_address_exists)
 
 
+@router.get('/get-balance')
+async def get_account_balance(address: str = Query(...)):
+    balance = check_account_balance(address)
+    if balance != -1:
+        return {"address_balance": balance}
+    else:
+        return {"address_balance": "Invalid wallet address"}

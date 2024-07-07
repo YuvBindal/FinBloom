@@ -35,7 +35,7 @@ export default function SettingsPage() {
     const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
+    if (docSnap.data().current_active_address) {
       setWalletAddress(docSnap.data().current_active_address);
       setPrivateKey(docSnap.data().current_active_private_key);
       setHasWallet(true);
@@ -141,14 +141,16 @@ export default function SettingsPage() {
               ) : (
                 <div className="text-center">
                   <p className="text-white text-base">You do not have a wallet yet.</p>
+          
+                </div>
+              )}
+
                   <button
                     onClick={createWallet}
                     className="mt-4 p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out"
                   >
                     Create Wallet
                   </button>
-                </div>
-              )}
               <button
                 onClick={() => setShowPairWallet(true)}
                 className="mt-4 p-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-150 ease-in-out"
