@@ -67,6 +67,11 @@ const Navbar = () => {
               My Profile
             </Link>
           )}
+          {user && (
+            <Link href="/wallet" className="text-white text-sm font-medium leading-normal">
+              My Wallet
+            </Link>
+          )}
         </div>
         <div className="flex gap-2">
           {loading ? null : !user ? (
