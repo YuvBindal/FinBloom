@@ -9,6 +9,7 @@ import asyncio
 from backend.eligibility import eligible
 from backend.llm_functions import loan_prediction_and_repayment_generation
 from backend.loan_issuance import convert_to_xrp
+from backend.CryptoWallets import create_public_private
 
 class LoanData(BaseModel):
     # Define the structure of your data here
@@ -88,3 +89,12 @@ async def process_model_output(data: LoanData):
 
     # Convert the output to a JSON
     return {"is_eligible": "true" if is_eligible else "false"}
+
+
+@router.get("/setup-wallet")
+async def setup_wallet():
+    address, private_key = create_public_private()
+    #return in json format
+    return {"address": address, "private_key": private_key}
+
+

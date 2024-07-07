@@ -16,13 +16,10 @@ from_account_address = '0xD6e89dAe8028dc5B88A8C85FE160EC99aa1Bc83B'
 
 def create_public_private():
     account = Account.create()
-
     address = account.address
     private_key = account._private_key.hex()
-
     print(f"Address: {address}")
     print(f"Private Key: {private_key}")
-
     return address, private_key
 
 def check_account_balance(address):
@@ -75,8 +72,8 @@ def receive_funds_transaction(to_account, from_account, from_account_private_key
 
     return txn_receipt
 
-txn_reciept = receive_funds_transaction(to_account_test_address, from_account_address, to_account_private_key)
-print(txn_reciept)
+# txn_reciept = receive_funds_transaction(to_account_test_address, from_account_address, to_account_private_key)
+# print(txn_reciept)
 
-balance = check_account_balance(from_account_address)
-print(f'Balance of {from_account_address}: {balance} ETH')
+# balance = check_account_balance(from_account_address)
+# print(f'Balance of {from_account_address}: {balance} ETH')

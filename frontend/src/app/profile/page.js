@@ -2,14 +2,16 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "../firebase-config";
-import { UserAuth } from "../utils/auth-helper";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
+
+const backendURL = "http://0.0.0.0:8000";
 
 export default function SettingsPage() {
   const [user, setUser] = useState(null);
   const [walletAddress, setWalletAddress] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
   const [hasWallet, setHasWallet] = useState(false);
 
   const router = useRouter();
@@ -19,6 +21,7 @@ export default function SettingsPage() {
       if (user) {
         setUser(user);
         checkWallet(user.uid);
+
       } else {
         console.log("User not found");
         setUser(null);
@@ -27,19 +30,58 @@ export default function SettingsPage() {
   }, []);
 
   const checkWallet = async (uid) => {
-    const docRef = doc(db, "wallets", uid);
+    const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       setWalletAddress(docSnap.data().address);
       setHasWallet(true);
+      setPrivateKey(docSnap.data().current_active_private_key);
+      setWalletAddress(docSnap.data().current_active_address);
     } else {
       setHasWallet(false);
     }
   };
 
   const createWallet = async () => {
-    // WALLET CREATION LOGIC
+    if (!user) {
+      alert("You need to be logged in to create a wallet.");
+      return;
+    }
+
+    try {
+        const response = await fetch(backendURL + '/setup-wallet'); // Adjust the URL as needed
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        const { address, private_key } = data;
+
+        if (address && private_key) {
+            setWalletAddress(address);
+            setPrivateKey(private_key);
+            setHasWallet(true);
+            // Save this information to the user's firebase document
+            const userDocRef = doc(db, "users", user.uid);
+            await updateDoc(userDocRef, {
+              current_active_address: address.toString(),
+              current_active_private_key: private_key.toString()
+            }); 
+
+
+            
+        } else {
+            console.error("Error: Wallet not created. Please Try Again!");
+        }
+    } catch (error) {
+        console.error('Error creating wallet:', error);
+
+        if (error instanceof FirebaseError) {
+          console.error('Firestore error code:', error.code);
+          console.error('Firestore error message:', error.message);
+          console.error('Firestore error details:', error.details);
+        }
+    }
   };
 
   return (
@@ -55,6 +97,8 @@ export default function SettingsPage() {
                 <div className="text-center">
                   <p className="text-white text-base">Your wallet address:</p>
                   <p className="text-[#93adc8] text-sm font-normal">{walletAddress}</p>
+                  <p className="text-white text-base">Your private key:</p>
+                  <p className="text-[#93adc8] text-sm font-normal">{privateKey}</p>
                 </div>
               ) : (
                 <div className="text-center">
