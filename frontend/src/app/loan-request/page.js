@@ -11,8 +11,8 @@ import {
 import { auth, db } from "../firebase-config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-const backendURL = "https://bloomfinbackend.onrender.com";
-// const backendURL = "http://127.0.0.1:8000";
+// const backendURL = "https://bloomfinbackend.onrender.com";
+const backendURL = "http://127.0.0.1:8000";
 
 export default function LoanRequestPage() {
   const [user, setUser] = useState(null);
@@ -289,8 +289,11 @@ export default function LoanRequestPage() {
               <h1 className="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">
                 Loan Issuance Request
               </h1>
+              <h1 className="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">
+                  Loan Eligibility Checker
+                </h1>
             </div>
-            <div className="flex flex-wrap justify-between gap-6">
+            <div className="flex flex-wrap lg:flex-nowrap justify-between gap-6">
               <div className="w-full lg:w-1/2 p-4 bg-[#111418] text-white">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="form-group mb-4 p-4 border-2 border-[#3c4753] rounded-lg">
@@ -433,7 +436,7 @@ export default function LoanRequestPage() {
 
                   <div className="form-group mb-4 p-4 border-2 border-[#3c4753] rounded-lg">
                     <label htmlFor="cAssetValues" className="block mb-2">
-                      Commerical Asset Values
+                      Commercial Asset Values
                     </label>
                     <input
                       type="number"
@@ -483,9 +486,6 @@ export default function LoanRequestPage() {
               </div>
 
               <div className="w-full lg:w-1/2 p-4 bg-[#111418] text-white overflow-hidden">
-                <h1 className="text-3xl font-bold mb-6 border-b-2 border-[#3c4753] pb-2">
-                  Loan Eligibility Checker
-                </h1>
                 <div>
                   {showForm && (
                     <div className="space-y-4">
@@ -529,7 +529,7 @@ export default function LoanRequestPage() {
                             {llmResponseSuccess && (
                               <p>
                                 The current exchange rate for 1 SGD ={" "}
-                                {JSON.stringify(xrpRate, null, 2)} XRP
+                                {JSON.stringify(xrpRate, null, 2)} ETH
                               </p>
                             )}
 
@@ -553,12 +553,9 @@ export default function LoanRequestPage() {
                               <div className="mt-4">
                                 <p>
                                   Congratulations on the loan! Your funds have been
-                                  successfully transferred.
+                                  successfully transferred. Please check your loan history for details!
                                 </p>
-                                <p>
-                                  Your wallet balance is XRP:{" "}
-                                  {JSON.stringify(walletBalance / 1_000_000, null, 2)}
-                                </p>
+                              
                               </div>
                             )}
                           </div>
