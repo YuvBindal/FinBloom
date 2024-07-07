@@ -51,7 +51,7 @@ class TransactionData(BaseModel):
     gas_limit: int
     from_account_private_key: str
 
-def serialize_receipt(receipt):
+def serialize_receipt(receipt, amount):
     """Convert the receipt object to a JSON serializable format."""
     return {
         "blockHash": to_hex(receipt.blockHash),
@@ -68,6 +68,7 @@ def serialize_receipt(receipt):
         "transactionHash": to_hex(receipt.transactionHash),
         "transactionIndex": receipt.transactionIndex,
         "type": receipt["type"],
+        'amount': amount,
     }
 
 
@@ -143,6 +144,7 @@ async def get_account_balance(address: str = Query(...)):
 async def send_transaction(transactionData: TransactionData):
     txn_reciept = receive_funds_transaction(transactionData)
     if txn_reciept != -1:
-        return {"transaction_receipt": serialize_receipt(txn_reciept)}
+        txn_reciept = serialize_receipt(txn_reciept, transactionData.amount)
+        return {"transaction_receipt": txn_reciept}
     return {"transaction_receipt": "Transaction failed. Please check the transaction details and try again."}
 

@@ -20,6 +20,7 @@ export default function WalletPage() {
   const [gasLimit, setGasLimit] = useState(21000);
   const [latestTransaction, setLatestTransaction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [transactions, setTransactions] = useState([]);
 
   const router = useRouter();
 
@@ -28,6 +29,7 @@ export default function WalletPage() {
       if (user) {
         setUser(user);
         checkWallet(user.uid);
+        fetchTransactions(user.uid);
       } else {
         console.log("User not found");
         setUser(null);
@@ -44,7 +46,6 @@ export default function WalletPage() {
       setPrivateKey(docSnap.data().current_active_private_key);
       setHasWallet(true);
       getAccountBalance(docSnap.data().current_active_address);
-
     } else {
       setHasWallet(false);
     }
@@ -85,8 +86,8 @@ export default function WalletPage() {
     }
 
     if (amountToSend <= 0) {
-        alert("Invalid amount to send");
-        return;
+      alert("Invalid amount to send");
+      return;
     }
 
     const transactionData = {
@@ -117,6 +118,20 @@ export default function WalletPage() {
         alert("Transaction successful");
         getAccountBalance(walletAddress);
         setLatestTransaction(result.transaction_receipt);
+        // Save transaction data to user's collection
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        let previous_transactions = [];
+
+        if (userDocSnap.exists() && userDocSnap.data().transactions) {
+          previous_transactions = userDocSnap.data().transactions;
+        }
+
+        previous_transactions.push(result.transaction_receipt);
+
+        await updateDoc(userDocRef, {
+          transactions: previous_transactions
+        });
       } else {
         alert("Transaction failed: " + result.transaction_receipt);
       }
@@ -128,13 +143,23 @@ export default function WalletPage() {
   };
 
   const LoadingSpinner = () => (
-     
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-        <div className="spinner"></div>
-        <div className="text-white ml-4">Processing your transaction...</div>
+      <div className="spinner"></div>
+      <div className="text-white ml-4">Processing your transaction...</div>
     </div>
-      
   );
+
+  const fetchTransactions = async (uid) => {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists() && docSnap.data().transactions) {
+      setTransactions(docSnap.data().transactions);
+      console.log(docSnap.data().transactions);
+    } else {
+      setTransactions([]);
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col bg-[#111a22] overflow-x-hidden" style={{ fontFamily: '"Public Sans", "Noto Sans", sans-serif' }}>
@@ -142,7 +167,6 @@ export default function WalletPage() {
         <div className="flex flex-1 justify-center py-5 w-full">
           <div className="flex flex-col w-full px-4">
             <h2 className="text-white tracking-light text-[28px] font-bold leading-tight text-center pb-3 pt-5">Wallet Information</h2>
-            
             <div className="flex flex-col w-full items-center justify-center">
               {hasWallet ? (
                 <div className="text-center">
@@ -204,6 +228,7 @@ export default function WalletPage() {
               <div className="mt-8 w-full flex flex-col items-center">
                 <h3 className="text-white text-lg font-bold leading-tight">Latest Successful Transaction</h3>
                 <div className="bg-gray-800 p-4 rounded-md w-full max-w-md mt-4">
+                  <p className="text-white text-sm"><strong>Transaction Amount in ETH:</strong> {latestTransaction.amount}</p>
                   <p className="text-white text-sm"><strong>Block Hash:</strong> {latestTransaction.blockHash}</p>
                   <p className="text-white text-sm"><strong>Block Number:</strong> {latestTransaction.blockNumber}</p>
                   <p className="text-white text-sm"><strong>From:</strong> {latestTransaction.from}</p>
@@ -213,6 +238,19 @@ export default function WalletPage() {
                   <p className="text-white text-sm"><strong>Effective Gas Price:</strong> {latestTransaction.effectiveGasPrice}</p>
                   <p className="text-white text-sm"><strong>Status:</strong> {latestTransaction.status}</p>
                 </div>
+              </div>
+            )}
+
+            {transactions.length > 0 && (
+              <div className="mt-8 w-full flex flex-col items-center">
+                <h3 className="text-white text-lg font-bold leading-tight">My Transactions</h3>
+                {transactions.map((transaction, index) => (
+                  <div key={index} className="bg-gray-800 p-4 rounded-md w-full max-w-2xl mt-6">
+                    <p className="text-white text-sm"><strong>Transaction Amount in ETH:</strong> {transaction.amount}</p>
+                    <p className="text-white text-sm"><strong>Sent To:</strong> {transaction.to}</p>
+                    <p className="text-white text-sm"><strong>Transaction Hash:</strong> {transaction.transactionHash}</p>
+                  </div>
+                ))}
               </div>
             )}
           </div>
