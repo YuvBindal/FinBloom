@@ -14,6 +14,10 @@ export default function WalletPage() {
   const [privateKey, setPrivateKey] = useState("");
   const [hasWallet, setHasWallet] = useState(false);
   const [accountBalance, setAccountBalance] = useState(0);
+  const [showTransactionForm, setShowTransactionForm] = useState(false);
+  const [recipientAddress, setRecipientAddress] = useState("");
+  const [amountToSend, setAmountToSend] = useState("");
+  const [gasLimit, setGasLimit] = useState(21000);
 
   const router = useRouter();
 
@@ -72,6 +76,44 @@ export default function WalletPage() {
     }
   };
 
+  const handleTransaction = async () => {
+    if (!isValidEthereumAddress(recipientAddress)) {
+      alert("Invalid recipient address");
+      return;
+    }
+
+    const transactionData = {
+      from: walletAddress,
+      to: recipientAddress,
+      value: amountToSend,
+      gas: gasLimit,
+      privateKey: privateKey
+    };
+
+    try {
+      const response = await fetch(`${backendURL}/send-transaction`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(transactionData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        alert("Transaction successful");
+      } else {
+        alert("Transaction failed: " + result.message);
+      }
+    } catch (error) {
+      console.error('Error sending transaction:', error);
+    }
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col bg-[#111a22] overflow-x-hidden" style={{ fontFamily: '"Public Sans", "Noto Sans", sans-serif' }}>
       <div className="flex h-full grow flex-col w-full">
@@ -88,6 +130,45 @@ export default function WalletPage() {
                   <p className="text-[#93adc8] text-sm font-normal">{privateKey}</p>
                   <p className="text-white text-base">Account Balance in ETH:</p>
                   <p className="text-[#93adc8] text-sm font-normal">{accountBalance}</p>
+
+                  <button
+                    onClick={() => setShowTransactionForm(!showTransactionForm)}
+                    className="mt-4 p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out"
+                  >
+                    Launch Transaction
+                  </button>
+
+                  {showTransactionForm && (
+                    <div className="mt-4 w-full flex flex-col items-center">
+                      <input
+                        type="text"
+                        placeholder="Recipient Address"
+                        value={recipientAddress}
+                        onChange={(e) => setRecipientAddress(e.target.value)}
+                        className="mt-2 p-2 rounded-md text-black w-full max-w-md"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Amount to Send (ETH)"
+                        value={amountToSend}
+                        onChange={(e) => setAmountToSend(e.target.value)}
+                        className="mt-2 p-2 rounded-md text-black w-full max-w-md"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Gas Limit"
+                        value={gasLimit}
+                        onChange={(e) => setGasLimit(e.target.value)}
+                        className="mt-2 p-2 rounded-md text-black w-full max-w-md"
+                      />
+                      <button
+                        onClick={handleTransaction}
+                        className="mt-4 p-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-150 ease-in-out"
+                      >
+                        Send Transaction
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center">
