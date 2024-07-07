@@ -6,13 +6,16 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 
-const backendURL = "http://0.0.0.0:8000";
+const backendURL = "http://localhost:8000";
 
 export default function SettingsPage() {
   const [user, setUser] = useState(null);
   const [walletAddress, setWalletAddress] = useState("");
   const [privateKey, setPrivateKey] = useState("");
   const [hasWallet, setHasWallet] = useState(false);
+  const [showPairWallet, setShowPairWallet] = useState(false);
+  const [newWalletAddress, setNewWalletAddress] = useState("");
+  const [newPrivateKey, setNewPrivateKey] = useState("");
 
   const router = useRouter();
 
@@ -21,7 +24,6 @@ export default function SettingsPage() {
       if (user) {
         setUser(user);
         checkWallet(user.uid);
-
       } else {
         console.log("User not found");
         setUser(null);
@@ -34,13 +36,20 @@ export default function SettingsPage() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      setWalletAddress(docSnap.data().address);
-      setHasWallet(true);
-      setPrivateKey(docSnap.data().current_active_private_key);
       setWalletAddress(docSnap.data().current_active_address);
+      setPrivateKey(docSnap.data().current_active_private_key);
+      setHasWallet(true);
     } else {
       setHasWallet(false);
     }
+  };
+
+  const isValidEthereumAddress = (address) => {
+    return /^0x[a-fA-F0-9]{40}$/.test(address);
+  };
+
+  const isValidPrivateKey = (key) => {
+    return /^0x[a-fA-F0-9]{64}$/.test(key);
   };
 
   const createWallet = async () => {
@@ -50,7 +59,7 @@ export default function SettingsPage() {
     }
 
     try {
-        const response = await fetch(backendURL + '/setup-wallet'); // Adjust the URL as needed
+        const response = await fetch(backendURL + '/setup-wallet');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -61,26 +70,55 @@ export default function SettingsPage() {
             setWalletAddress(address);
             setPrivateKey(private_key);
             setHasWallet(true);
-            // Save this information to the user's firebase document
+
             const userDocRef = doc(db, "users", user.uid);
             await updateDoc(userDocRef, {
               current_active_address: address.toString(),
               current_active_private_key: private_key.toString()
             }); 
 
-
-            
         } else {
             console.error("Error: Wallet not created. Please Try Again!");
         }
     } catch (error) {
         console.error('Error creating wallet:', error);
+    }
+  };
 
-        if (error instanceof FirebaseError) {
-          console.error('Firestore error code:', error.code);
-          console.error('Firestore error message:', error.message);
-          console.error('Firestore error details:', error.details);
-        }
+  const pairWallet = async () => {
+    if (!user) {
+      alert("You need to be logged in to pair a wallet.");
+      return;
+    }
+
+    if (!newWalletAddress || !newPrivateKey) {
+      alert("Please enter both the wallet address and private key.");
+      return;
+    }
+
+    if (!isValidEthereumAddress(newWalletAddress)) {
+      alert("Invalid Ethereum wallet address. Please try again.");
+      return;
+    }
+
+    if (!isValidPrivateKey(newPrivateKey)) {
+      alert("Invalid private key. Please try again.");
+      return;
+    }
+
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      await updateDoc(userDocRef, {
+        current_active_address: newWalletAddress.toString(),
+        current_active_private_key: newPrivateKey.toString()
+      });
+
+      setWalletAddress(newWalletAddress);
+      setPrivateKey(newPrivateKey);
+      setHasWallet(true);
+      setShowPairWallet(false);
+    } catch (error) {
+      console.error('Error pairing wallet:', error);
     }
   };
 
@@ -111,7 +149,45 @@ export default function SettingsPage() {
                   </button>
                 </div>
               )}
+              <button
+                onClick={() => setShowPairWallet(true)}
+                className="mt-4 p-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-150 ease-in-out"
+              >
+                Pair Existing Wallet
+              </button>
             </div>
+
+            {showPairWallet && (
+              <div className="flex flex-col w-full items-center justify-center mt-4">
+                <h3 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-2 pt-4">Pair Existing Wallet</h3>
+                <input
+                  type="text"
+                  placeholder="Wallet Address"
+                  value={newWalletAddress}
+                  onChange={(e) => setNewWalletAddress(e.target.value)}
+                  className="mt-2 p-2 rounded-md text-black"
+                />
+                <input
+                  type="text"
+                  placeholder="Private Key"
+                  value={newPrivateKey}
+                  onChange={(e) => setNewPrivateKey(e.target.value)}
+                  className="mt-2 p-2 rounded-md text-black"
+                />
+                <button
+                  onClick={pairWallet}
+                  className="mt-4 p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out"
+                >
+                  Pair Wallet
+                </button>
+                <button
+                  onClick={() => setShowPairWallet(false)}
+                  className="mt-4 p-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-150 ease-in-out"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
 
             <div className="flex flex-col w-full items-center justify-center mt-8">
               <h3 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-2 pt-4">Profile Information</h3>

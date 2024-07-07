@@ -9,7 +9,7 @@ import asyncio
 from backend.eligibility import eligible
 from backend.llm_functions import loan_prediction_and_repayment_generation
 from backend.loan_issuance import convert_to_xrp
-from backend.CryptoWallets import create_public_private
+from backend.CryptoWallets import create_public_private, check_valid_wallet_address
 
 class LoanData(BaseModel):
     # Define the structure of your data here
@@ -92,9 +92,12 @@ async def process_model_output(data: LoanData):
 
 
 @router.get("/setup-wallet")
-async def setup_wallet():
-    address, private_key = create_public_private()
-    #return in json format
-    return {"address": address, "private_key": private_key}
+async def setup_wallet(check_wallet_address_exists = None):
+    if not check_wallet_address_exists:
+        address, private_key = create_public_private()
+        #return in json format
+        return {"address": address, "private_key": private_key}
+    else:
+        return check_valid_wallet_address(check_wallet_address_exists)
 
 

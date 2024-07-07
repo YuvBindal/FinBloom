@@ -28,6 +28,10 @@ def check_account_balance(address):
     
     return balance_eth
 
+def check_valid_wallet_address(address):
+    return web3.is_address(address)
+
+print(check_valid_wallet_address(random_string))
 
 def receive_funds_transaction(to_account, from_account, from_account_private_key):
     gas_price = web3.to_wei('20', 'gwei')
