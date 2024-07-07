@@ -2,7 +2,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.19",
     "firebase": "^10.12.3",
-    "next": "^14.0.4",
+    "next": "^14.2.4",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.4",
     "xrpl": "^2.14.0",
