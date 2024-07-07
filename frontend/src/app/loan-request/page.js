@@ -524,7 +524,7 @@ export default function LoanRequestPage() {
                             </pre>
                             <p>
                               If you agree with these terms, please generate a
-                              walletID to transfer your funds on the XRPL Chain.
+                              walletID to transfer your funds on the ETH Chain.
                             </p>
                             {llmResponseSuccess && (
                               <p>
