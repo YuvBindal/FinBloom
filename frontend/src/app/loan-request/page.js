@@ -289,8 +289,11 @@ export default function LoanRequestPage() {
               <h1 className="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">
                 Loan Issuance Request
               </h1>
+              <h1 className="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">
+                  Loan Eligibility Checker
+                </h1>
             </div>
-            <div className="flex flex-wrap justify-between gap-6">
+            <div className="flex flex-wrap lg:flex-nowrap justify-between gap-6">
               <div className="w-full lg:w-1/2 p-4 bg-[#111418] text-white">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="form-group mb-4 p-4 border-2 border-[#3c4753] rounded-lg">
@@ -433,7 +436,7 @@ export default function LoanRequestPage() {
 
                   <div className="form-group mb-4 p-4 border-2 border-[#3c4753] rounded-lg">
                     <label htmlFor="cAssetValues" className="block mb-2">
-                      Commerical Asset Values
+                      Commercial Asset Values
                     </label>
                     <input
                       type="number"
@@ -483,9 +486,6 @@ export default function LoanRequestPage() {
               </div>
 
               <div className="w-full lg:w-1/2 p-4 bg-[#111418] text-white overflow-hidden">
-                <h1 className="text-3xl font-bold mb-6 border-b-2 border-[#3c4753] pb-2">
-                  Loan Eligibility Checker
-                </h1>
                 <div>
                   {showForm && (
                     <div className="space-y-4">
